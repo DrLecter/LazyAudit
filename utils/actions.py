@@ -11,15 +11,19 @@ from pathlib import Path
 class Scope(ScopeData):
     pass
 
+class Status(StatusData):
+    pass
+
 class Command(CommandData, common.CommonActions):
-    file_path = PATHS.COMMANDS_FILE
+    file_path = PATHS.COMMANDS_FILE      
+
+    # Recibe un Command y devuelve el Command.command con las variables interpoladas
     @classmethod
-    def change_scope(command):
-        if command.scope == Scope.PRIVATE:
-            command.scope = Scope.GLOBAL
-        else:
-            command.scope = Scope.PRIVATE
-        #print(command)
+    def interpolate(cls, command : "Command") -> str:
+        modified_comand = command.command
+        for i in Variable.read_all():
+            modified_comand = modified_comand.replace("{" + i.key +"}", i.value)
+        return modified_comand
 
 class Variable(VariableData, common.CommonActions):
     file_path = PATHS.VARIABLES_FILE
@@ -27,12 +31,35 @@ class Variable(VariableData, common.CommonActions):
 
 class Project(ProjectData, common.CommonActions):
 
+    # Recibe el status nuevo y lo cambia en el proyecto activo
     @classmethod
-    def modify(cls, new_project):
+    def change_status(cls, new_status : str) -> None:
+        project = cls.read_all()[0]
+        if project.status != new_status:
+            project.status = new_status
+            cls.modify(project)
+            #print(f"[+] Estado cambiado a {new_status}")
+        #else:
+            #print(f"[!] El estado ya es {new_status}")
+
+    # Recibe un nombre de proyecto y borra el directorio de ese proyecto
+    @classmethod
+    def remove(cls, project_name : str) -> None:
+        project_dir = PATHS.PROJECTS_DIR/project_name
+
+        if project_dir.exists(): 
+            if project_name != PATHS.ACTIVE_PROJECT:
+                from shutil import rmtree
+                rmtree(project_dir)
+            else:
+                print("[!] Proyecto activo")
+        else:
+            print("[!] Proyecto inexistente")
+
+    # Recibe el Project completo y lo sobreescribe al viejo
+    @classmethod
+    def modify(cls, new_project) -> None:
         old_project = cls.read_all()
-        print(old_project)
-        print(new_project)
-        print(cls.file_path)
 
         if old_project[0] != new_project:
             common._save(cls.file_path, new_project)
@@ -42,8 +69,7 @@ class Project(ProjectData, common.CommonActions):
             project_dir.rename(project_dir.parent/new_project.name)
             cls.change(new_project.name)
 
-        
-
+    # Recibe un Project y crea el directorio, los archivos y llena el project.json
     @classmethod
     def add(cls, new_project : "Project") -> None:
         base_files = ["commands.json", "findings.json", "hosts.json", "variables.json"]
@@ -53,30 +79,28 @@ class Project(ProjectData, common.CommonActions):
             Path(project_dir/path).touch()
         common._save(project_dir/"project.json", new_project)
 
+    # Devuelve los proyectos disponibles
     @classmethod
     def show(cls):
-        print("[+] Proyecos disponibles")
-        for i in PATHS.PROJECTS_DIR.iterdir():
-            print(i.name)
+        return PATHS.PROJECTS_DIR.iterdir()
 
+    # Recibe un nombre de proyecto y setea la variable ACTIVE_PROJECT
     @classmethod
     def change(cls, new_project : str) -> None:
         with open(PATHS.CONFIG_FILE, "r") as f:
             data = json.load(f)
             active_project = data["project"]
-        if active_project == new_project:
-            print(f"[+] {new_project} activo")
-            
-        # Verifica que el pryecto al que se quiere cambiar realmente exista
-        elif (PATHS.PROJECTS_DIR / new_project).exists():
-            with open(PATHS.CONFIG_FILE, "w") as f:
-                json.dump( {"project": new_project}, f, indent=4, ensure_ascii=False)
-                print(f"[+] Proyecto cambiado a: {new_project}")
-        else: 
-            print(f"[!] Proyecto no existente")
+
+        if active_project != new_project:
+            # Verifica que el pryecto al que se quiere cambiar realmente exista
+            if (PATHS.PROJECTS_DIR / new_project).exists():
+                with open(PATHS.CONFIG_FILE, "w") as f:
+                    json.dump( {"project": new_project}, f, indent=4, ensure_ascii=False)
+        #        print(f"[+] Proyecto cambiado a: {new_project}")
+        #else: 
+        #    print(f"[!] Proyecto no existente")
 
     file_path = PATHS.PROJECT_FILE # No borrar
-
 
 class Finding(FindingData, common.CommonActions):
     file_path = PATHS.FINDINGS_FILE
@@ -85,13 +109,3 @@ class Finding(FindingData, common.CommonActions):
 class Host(HostData, common.CommonActions):
     file_path = PATHS.HOSTS_FILE
     pass
-
-
-
-
-#comando = Command(title="titulo1",command="ejecutar tal script",description="ejecuta el script tanto",tags=["ejecucion"],scope=Scope.GLOBAL)
-#print(comando.description)
-#Command.add(comando)
-
-#comando = [d for d in common.read_all(PATHS.get_project_commands("audit_test"), Command) if d.title == "prueba0"]
-#Command.change_scope(comando[0])

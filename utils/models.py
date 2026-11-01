@@ -2,15 +2,20 @@ from dataclasses import dataclass, field
 from datetime import datetime
 
 class ScopeData:
-    GLOBAL = 'global'
-    PRIVATE = 'private'
+    GLOBAL = "global"
+    PRIVATE = "private"
+
+class StatusData:
+    ACTIVE = "active"
+    PAUSED = "paused"
+    FINISHED = "finished"
 
 @dataclass
 class CommandData:
     title : str
     command : str
     description : str
-    tags : list[str] = field(default_factory=list) # Para evitar que se compartan listas.
+    tags : list[str] = field(default_factory=list)
     scope : ScopeData = ScopeData.PRIVATE
 
 @dataclass
@@ -24,7 +29,7 @@ class VariableData:
 class ProjectData:
     name : str
     description : str = ""
-    status : str = ""
+    status : StatusData = StatusData.ACTIVE
     created : str = datetime.now().isoformat()
 
 @dataclass

@@ -7,6 +7,7 @@ DATA_DIR = LAZYAUDIT_DIR/"data"
 GLOBAL_DIR = LAZYAUDIT_DIR/"data"/"globals"
 CONFIG_FILE = DATA_DIR/"config.json"
 
+# Lee el config.json para seetear el ACTIVE_PROJECT
 with open(CONFIG_FILE, "r") as f:
     data = json.load(f)
     ACTIVE_PROJECT = data["project"]

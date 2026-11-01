@@ -1,5 +1,35 @@
 [
     {
+        "title": "prueba2",
+        "command": "prueba {prueba} prueba",
+        "description": "prueba",
+        "tags": [
+            "prueba",
+            "prueba"
+        ],
+        "scope": "global"
+    },
+    {
+        "title": "prueba1",
+        "command": "prueba {prueba} prueba",
+        "description": "prueba",
+        "tags": [
+            "prueba",
+            "prueba"
+        ],
+        "scope": "global"
+    },
+    {
+        "title": "prueba0",
+        "command": "prueba {prueba} prueba",
+        "description": "prueba",
+        "tags": [
+            "prueba",
+            "prueba"
+        ],
+        "scope": "global"
+    },
+    {
         "title": "Global Nmap todos los puertos",
         "command": "nmap -p- -T4 {RHOST}",
         "description": "Escaneo completo de los 65535 puertos",
@@ -167,16 +197,6 @@
         "tags": [
             "privesc",
             "windows"
-        ],
-        "scope": "global"
-    },
-    {
-        "title": "Global John the Ripper crackeo hash",
-        "command": "john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt",
-        "description": "Crackeo de hashes usando diccionario",
-        "tags": [
-            "cracking",
-            "john"
         ],
         "scope": "global"
     },

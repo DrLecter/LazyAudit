@@ -10,37 +10,7 @@
         "scope": "private"
     },
     {
-        "title": "prueba2",
-        "command": "prueba {prueba} prueba",
-        "description": "prueba",
-        "tags": [
-            "prueba",
-            "prueba"
-        ],
-        "scope": "global"
-    },
-    {
         "title": "prueba1",
-        "command": "prueba {prueba} prueba",
-        "description": "prueba",
-        "tags": [
-            "prueba",
-            "prueba"
-        ],
-        "scope": "private"
-    },
-    {
-        "title": "prueba1",
-        "command": "prueba {prueba} prueba",
-        "description": "prueba",
-        "tags": [
-            "prueba",
-            "prueba"
-        ],
-        "scope": "global"
-    },
-    {
-        "title": "prueba0",
         "command": "prueba {prueba} prueba",
         "description": "prueba",
         "tags": [
@@ -57,6 +27,16 @@
             "prueba",
             "prueba"
         ],
-        "scope": "global"
+        "scope": "private"
+    },
+    {
+        "title": "Global John the Ripper crackeo hash",
+        "command": "john --wordlist=/usr/share/wordlists/rockyou.txt hash.txt",
+        "description": "Crackeo de hashes usando diccionario",
+        "tags": [
+            "cracking",
+            "john"
+        ],
+        "scope": "private"
     }
 ]
