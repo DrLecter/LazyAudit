@@ -1,77 +1,73 @@
-from dataclasses import asdict
-import json
-import common
+import argparse
+import sys
 from pathlib import Path
-import PATHS
+sys.path.append(str(Path(__file__).parent / "utils"))
+from actions import Project, Command, Variable, Host, Finding, Scope, Status
 
-#old_data = common.read_all(Path("utils/data.json"), CommandData)
-#print(old_data)
+# 1. Sin parámetros (ej. -lp): lleva action="store_true".
+# 2. Con 1 parámetro (ej. -sp audit_test1): no lleva action (es el comportamiento por defecto, te guarda el string que escribas en args.set_project).
+# 3. Con 2 o más parámetros (ej. -sv RHOST 10.10.10.5): lleva nargs=2 (y te guarda una lista de 2 elementos ["RHOST", "10.10.10.5"] en args.set_var).
 
-#print(common.read_all(Path("utils/data.json"), CommandData)) # -> [Model(), Model()]
-'''
-hosts = common.read_all(PATHS.HOSTS_FILE)
+parser = argparse.ArgumentParser(description='LazyAudit')
 
-for host in hosts:
-    print(host)
+# ========== Comandos ===========
 
-old_host = HostData    (
-        ip= "10.10.20.15",
-        hostname = "dc01.corp.local",
-        ports = [
-            "53",
-            "88",
-            "389",
-            "445"
-        ],
-        services = [
-            "Simple DNS Plus",
-            "Kerberos",
-            "Microsoft Windows AD LDAP",
-            "Microsoft-DS SMB"
-        ]
-)
+# ========== Variables ==========
 
-new_host = HostData(
-            ip="nuevo",
-            hostname="nuevo",
-            ports=["nuevo"],
-            services=["nuevo"]
-        )
+# ========== Proyectos ==========
+project_args = parser.add_argument_group("Projects")
 
-# Recibe la [Model(), Model()] a modificar, el dato viejo (sacado de la tui) y el dato nuevo (armado)
-def modify(data, old_model, new_model) -> None:
-    for model in data:
-        if model == old_model:
-            index = data.index(model)
-            data[index] = new_model
+project_args.add_argument("-lp", "--list-projects", action="store_true", help="Mostrar los proyectos disponibles.")
+project_args.add_argument("--active", action="store_true", help="Mostrar el proyecto activo (uso en --list-projects).")
 
-modify(hosts, old_host, new_host)
+project_args.add_argument("-ap", "--add-project", nargs=3, metavar=("NAME", "DESCRIPTION", "STATUS"), help="Crear un prpyecto nuevo.")
 
-for host in hosts:
-    print(host)
+project_args.add_argument("-rp", "--remove-project", nargs=1, metavar="NAME", help="Eliminar un proyecto.")
 
+project_args.add_argument("-mp", "--modify-project", action="store_true", help="Modificar el proyecto actual.")
+project_args.add_argument("--name", metavar="NAME", help="Indicador de nombre (uso en -m / --modify-project).")
+project_args.add_argument("--description", metavar="NAME", help="Indicador de descripción (uso en -m / --modify-project).")
+project_args.add_argument("--status", metavar="NAME", help="Indicador de estado (uso en -m / --modify-project).")
 
-'''
-from actions import Variable, Host, Command, Project, Scope, Project
-#print(Command.read_all())
+project_args.add_argument("-cp", "--change-project", nargs=1, metavar="NAME", help="Cambiar de proyecto.")
 
+# ========== Findings ===========
 
-comando = Command(title='Global Nikto scan', command='nikto -h http://{RHOST} {LPORT}', description='Escaneo de vulnerabilidades comunes en servidores web', tags=['web', 'vuln-scan'], scope='global')
-#Command.add(comando)
+# ============ Hosts ============
 
-#print(Command.read_all())
+# ========== Funciones ==========
+args = parser.parse_args()
 
-#from datetime import datetime
-#new_project = Project(name="audit_test3")
-#Project.add(new_project)
+# ========== Comandos ===========
+# --list-projects
+if args.list_projects:
+    if not args.active:
+        for i in Project.show():
+            print(i)
+    else:
+        for i in Project.show():
+            if i == Project.file_path.parent.name:
+                print(i)
 
-#Project.modify(new_project)
-
-#Project.change("audit_test3")
-
-#Project.remove("audit_test")
-#from actions import Status
-#Project.change_status(Status.ACTIVE)
-
-#Command.interpolate(comando)
-
+# --add-project
+elif args.add_project:
+    project = Project(*args.add_project)
+    print(project)
+    Project.add(project)
+# --remove-project
+elif args.remove_project:
+    project = args.remove_project[0]
+    Project.remove(project)
+# --modify-project
+elif args.modify_project:
+    project = Project.read_all()[0]
+    if args.name:
+        project.name = args.name
+    if args.description:
+        project.description = args.description
+    if args.status:
+        project.status = args.status
+    Project.modify(project)
+elif args.change_project:
+    project = args.change_project[0]
+    Project.change(project)

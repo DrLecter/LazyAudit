@@ -1,8 +1,8 @@
 [
     {
         "name": "audit_test1",
-        "description": "Auditoría de prueba 1 - Red interna y Active Directory",
+        "description": "",
         "status": "active",
-        "created": "24-10-2026"
+        "created": "2026-11-02T00:20:56.552882"
     }
 ]

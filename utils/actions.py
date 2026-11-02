@@ -82,7 +82,12 @@ class Project(ProjectData, common.CommonActions):
     # Devuelve los proyectos disponibles
     @classmethod
     def show(cls):
-        return PATHS.PROJECTS_DIR.iterdir()
+        projects = PATHS.PROJECTS_DIR.iterdir()
+        projects_list = []
+        for i in projects:
+            projects_list.append(i.name)
+        return projects_list
+
 
     # Recibe un nombre de proyecto y setea la variable ACTIVE_PROJECT
     @classmethod
