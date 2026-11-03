@@ -14,6 +14,9 @@ class Scope(ScopeData):
 class Status(StatusData):
     pass
 
+class Severity(SeverityData): 
+    pass
+
 class Command(CommandData, common.CommonActions):
     file_path = PATHS.COMMANDS_FILE      
 
@@ -79,14 +82,15 @@ class Project(ProjectData, common.CommonActions):
             Path(project_dir/path).touch()
         common._save(project_dir/"project.json", new_project)
 
-    # Devuelve los proyectos disponibles
+    # Devuelve una lista de Models de los poyectos disponibles
     @classmethod
     def show(cls):
         projects = PATHS.PROJECTS_DIR.iterdir()
         projects_list = []
         for i in projects:
-            projects_list.append(i.name)
-        return projects_list
+            item = common._extract_data(i / "project.json")
+            projects_list.extend(item)
+        return [cls(**item) for item in projects_list]
 
 
     # Recibe un nombre de proyecto y setea la variable ACTIVE_PROJECT

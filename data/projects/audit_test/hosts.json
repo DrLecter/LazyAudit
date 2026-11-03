@@ -13,13 +13,18 @@
         ]
     },
     {
-        "ip": "192.168.1.55",
-        "hostname": "db-srv.test.local",
+        "ip": "192.168.0.1",
+        "hostname": "CloudServer",
         "ports": [
-            "3306"
+            "22",
+            "443",
+            "8080"
         ],
         "services": [
-            "MySQL 8.0.32"
+            "ssh",
+            "https",
+            "http",
+            "smtp"
         ]
     }
 ]

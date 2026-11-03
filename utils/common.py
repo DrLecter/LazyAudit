@@ -65,7 +65,10 @@ class CommonActions():
     # Command.search(query)
     @classmethod
     def search(cls, query: str, threshold: int = 86) -> list:
-        data = cls.read_all()
+        if cls.__name__ == "Project":
+            data = cls.show()
+        else:
+            data = cls.read_all()
         resultados = []
 
         for item in data:

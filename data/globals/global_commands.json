@@ -1,7 +1,7 @@
 [
     {
-        "title": "prueba2",
-        "command": "prueba {prueba} prueba",
+        "title": "Este comando fue modificado (5)",
+        "command": "Este comando fue modificado (5)",
         "description": "prueba",
         "tags": [
             "prueba",
@@ -217,6 +217,18 @@
         "tags": [
             "comando",
             "modificado"
+        ],
+        "scope": "global"
+    },
+    {
+        "title": "asd",
+        "command": "asd",
+        "description": "asd",
+        "tags": [
+            "asd",
+            "asd",
+            "asd",
+            "asd"
         ],
         "scope": "global"
     }

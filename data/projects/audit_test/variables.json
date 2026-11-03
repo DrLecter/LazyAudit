@@ -10,5 +10,11 @@
         "value": "9001",
         "scope": "private",
         "description": "Puerto de escucha"
+    },
+    {
+        "key": "NexCloud",
+        "value": "192.168.0.22",
+        "scope": "private",
+        "description": "Servidor nextcloud casa"
     }
 ]

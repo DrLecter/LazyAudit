@@ -10,6 +10,11 @@ class StatusData:
     PAUSED = "paused"
     FINISHED = "finished"
 
+class SeverityData:
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
 @dataclass
 class CommandData:
     title : str
@@ -22,8 +27,8 @@ class CommandData:
 class VariableData:
     key : str
     value : str
-    scope : ScopeData = ScopeData.PRIVATE
     description : str = ""
+    scope : ScopeData = ScopeData.PRIVATE
 
 @dataclass
 class ProjectData:
@@ -37,7 +42,7 @@ class FindingData:
     host : str
     description : str
     vulns : list[str] = field(default_factory=list)
-    severity : str = "low"
+    severity : SeverityData = SeverityData.LOW
 
 @dataclass
 class HostData: 

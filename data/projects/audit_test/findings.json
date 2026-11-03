@@ -1,6 +1,6 @@
 [
     {
-        "host": "192.168.1.50",
+        "host": "192.168.100.1",
         "description": "Servidor web Apache con directorio expuesto",
         "vulns": [
             "Directory Listing",
@@ -9,11 +9,12 @@
         "severity": "medium"
     },
     {
-        "host": "192.168.1.50",
-        "description": "Servicio SSH con autenticación por contraseña débil",
+        "host": "192.168.100.1",
+        "description": "Host de prueba en 100.1",
         "vulns": [
-            "Weak Credentials",
-            "Brute Force"
+            "ssh logi bypass",
+            " CSRF",
+            " XSS"
         ],
         "severity": "high"
     }
