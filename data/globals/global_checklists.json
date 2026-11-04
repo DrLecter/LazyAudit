@@ -1,0 +1,32 @@
+[
+    {
+        "group": "owasp top 10",
+        "task": "A01 - Broken Access Control",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "infraestructura",
+        "task": "Verificar versiones obsoletas de servicios expuestos (banners)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "owasp top 10",
+        "task": "A02 - Cryptographic Failures",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "owasp top 10",
+        "task": "A03 - Injection (SQLi, Command Injection, SSTI)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "infraestructura",
+        "task": "Probar credenciales por defecto en paneles de administración",
+        "done": true,
+        "scope": "global"
+    }
+]

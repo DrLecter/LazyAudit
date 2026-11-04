@@ -2,7 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent / "utils"))
-from actions import Project, Command, Variable, Host, Finding, Scope, Status
+from actions import Project, Command, Variable, Host, Finding, Scope, Checklist, Workflow
 
 # 1. Sin parámetros (ej. -lp): lleva action="store_true".
 # 2. Con 1 parámetro (ej. -sp audit_test1): no lleva action (es el comportamiento por defecto, te guarda el string que escribas en args.set_project).
@@ -68,6 +68,28 @@ hosts_args.add_argument("-rh", "--remove-host",  nargs=1, type=int, metavar="IND
 
 hosts_args.add_argument("-mh", "--modify-host", nargs=1, type=int, metavar="INDEX", help="Modificar un cliente.")
 
+# ============ Checklist ============
+checklist_args = parser.add_argument_group("Checklist")
+
+checklist_args.add_argument("-lck", "--list-checklists", action="store_true", help="Mostrar los checklists disponibles.")
+
+checklist_args.add_argument("-ack", "--add-checklist", nargs=2, metavar=("GROUP", "TASK"), help="Crear un checklist nuevo.")
+
+checklist_args.add_argument("-rck", "--remove-checklist",  nargs="+", metavar=("GROUP"), help="Eliminar un checklist.")
+
+checklist_args.add_argument("-mck", "--modify-checklist", nargs="+", metavar=("GROUP", "INDEX"), help="Modificar un checklist.")
+
+# ========== Workflows ==========
+workflows = parser.add_argument_group("Workflow")
+
+workflows.add_argument("-lw", "--list-workflows", action="store_true", help="Mostrar los workflows disponibles.")
+
+workflows.add_argument("-aw", "--add-workflow", nargs=1, metavar=("PATH"), help="Crear un workflow nuevo.")
+
+workflows.add_argument("-rw", "--remove-workflow",  nargs=1, type=int, metavar=("INDEX"), help="Eliminar un workflow.")
+
+workflows.add_argument("-xw", "--run", nargs=1, type=int, metavar=("INDEX"), help="Ejecutar un workflow.")
+
 # ========== Modyfiers ==========
 modifiers_args = parser.add_argument_group("Modifiers")
 
@@ -94,6 +116,10 @@ modifiers_args.add_argument("--raw", action="store_true")
 modifiers_args.add_argument("--global", dest="is_global", action="store_true", help="Agrega un comando a la lista global de variables.")
 modifiers_args.add_argument("-s", "--search", nargs=1, metavar="QUERY", help="Filtra por búsqueda difusa (usar con -lp, -lc, -lv, -lh, -lf).")
 
+modifiers_args.add_argument("--group", metavar="GROUP")
+modifiers_args.add_argument("--item", type=int, metavar="ITEM")
+modifiers_args.add_argument("--task", metavar="TASK")
+modifiers_args.add_argument("--toggle", action="store_true")
 # ==================== Funciones ====================
 args = parser.parse_args()
 
@@ -131,27 +157,30 @@ elif args.modify_command:
 
 # --list-commands
 elif args.list_commands:
+    all_commands = Command.read_all()
     if args.search:
         commands_list = Command.search(args.search[0])
     else:
-        commands_list = Command.read_all()
+        commands_list = all_commands
 
-    index = 0
     for i in commands_list:
+        index = all_commands.index(i)
         if args.raw:
             command = i.command
         else:
-            command = Command.interpolate(i).replace("Global", "")
+            command = Command.interpolate(i)
         print(f"[{index}] - {i.title}: {command} - [{i.scope.upper()}]")
         index += 1
 
 # ========== Proyectos ==========
 # --list-projects
 elif args.list_projects:
+    all_projects = Project.show()
+    index=0
     if args.search:
         projects_list = Project.search(args.search[0])
     else:
-        projects_list = Project.show()
+        projects_list = all_projects
 
     if args.active:
         if args.verbose:
@@ -175,10 +204,10 @@ elif args.list_projects:
                 print(f"Estado: {i.status.upper()}")
                 print(f"Fecha de creación: {i.created}\n")
         else:
-            index = 0
             for i in projects_list:
+                index = all_projects.index(i)
                 print(f"[{index}] - {i.name}")
-                index += 1
+                
 
 # --add-project
 elif args.add_project:
@@ -209,16 +238,16 @@ elif args.change_project:
 # ========== Findings ==========
 # --list-findings
 elif args.list_findings:
+    all_findings = Finding.read_all()
     if args.search:
         findings_list = Finding.search(args.search[0])
     else:
-        findings_list = Finding.read_all()
+        findings_list = all_findings
 
-    index = 0
     for i in findings_list:
+        index = all_findings.index(i)
         print(f"[{index}] - {i.host} // {i.description}.")
         print(f"({i.severity.upper()}). Vulns: {', '.join(i.vulns)}")
-        index += 1
 
 # --modify-finding
 elif args.modify_finding:
@@ -250,15 +279,15 @@ elif args.add_finding:
 # ========== Variables ==========
 # --list-variable
 elif args.list_variables:
+    all_vars = Variable.read_all()
     if args.search:
         variables_list = Variable.search(args.search[0])
     else:
-        variables_list = Variable.read_all()
+        variables_list = all_vars
 
-    index = 0
     for i in variables_list:
+        index = all_vars.index(i)
         print(f"[{index}] - {i.key} : {i.value} // {i.description} - [{i.scope.upper()}]. ")
-        index += 1
 
 # --modify-variable
 elif args.modify_variable:
@@ -291,15 +320,15 @@ elif args.add_variable:
 # ========== Hosts ==========
 # --list-hosts
 elif args.list_hosts:
+    all_hosts = Host.read_all()
     if args.search:
         hosts_list = Host.search(args.search[0])
     else:
         hosts_list = Host.read_all()
 
-    index = 0
     for i in hosts_list:
+        index = all_hosts.index(i)
         print(f"[{index}] - {i.hostname} ({i.ip}) - Ports: {', '.join(i.ports)} - Services: {', '.join(i.services)}")
-        index += 1
 
 # --modify-host
 elif args.modify_host:
@@ -328,3 +357,108 @@ elif args.add_host:
     host.ports = host.ports.split(",")
     host.services = host.services.split(",")
     Host.add(host)
+
+# ========== Checklist ==========
+# --list-checklists
+elif args.list_checklists:
+    all_checklists = Checklist.read_all()
+    if args.search:
+        checklists_list = Checklist.search(args.search[0])
+    else:
+        checklists_list = Checklist.read_all()
+
+    checklists_list.sort(key=lambda x: x.group)
+    index = 1
+    active_group = ""
+    done = ""
+    for i in checklists_list:
+        if i.group != active_group:
+            if active_group != "":
+                print()
+            active_group = i.group
+            print(f"{i.group.upper()} ({i.scope.upper()})")
+            group_list = [x for x in all_checklists if x.group == i.group]
+        index = group_list.index(i) + 1
+        if i.done:
+            done = "[x]"
+            print(f"[{index}] {done} - {i.task}")
+        else:
+            done = "[ ]"
+            print(f"[{index}] {done} - {i.task}")
+        
+# --modify-checklist
+elif args.modify_checklist:
+        import copy
+        group_name = args.modify_checklist[0].lower()
+        filtered_list = [i for i in Checklist.read_all() if i.group.lower() == group_name]
+
+        if args.item:
+            old_checklist = filtered_list[args.item - 1]
+            new_checklist = copy.copy(old_checklist)
+
+            if args.group:
+                new_checklist.group = args.group.lower()
+            if args.task:
+                new_checklist.task = args.task
+            if args.toggle:
+                new_checklist = Checklist.toggle(new_checklist)
+
+            Checklist.modify(old_checklist, new_checklist)
+        else:
+            if args.scope:
+                Checklist.change_scope(group_name, args.scope)
+            if args.group:
+                for i in filtered_list:
+                    new_i = copy.copy(i)
+                    new_i.group = args.group.lower()
+                    Checklist.modify(i, new_i)
+
+# --remove-checklist
+elif args.remove_checklist:
+    filtered_list = [i for i in Checklist.read_all() if i.group.lower() == args.remove_checklist[0].lower()]
+    if args.item:
+        Checklist.remove(filtered_list[args.item-1])
+        pass
+    else: 
+        for i in filtered_list:
+            Checklist.remove(i)
+
+# --add-checklist
+elif args.add_checklist: 
+    checklist = Checklist(*args.add_checklist)
+    checklist.group = checklist.group.lower()
+    if args.is_global: 
+        checklist.scope = Scope.GLOBAL
+    Checklist.add(checklist)
+
+# ========== Workflows ==========
+# --list-workflow
+elif args.list_workflows:
+    all_wf = Workflow.read_all()
+    if args.search:
+        wf_list = Workflow.search(args.search[0])
+    else:
+        wf_list = all_wf
+
+    wf_list.sort(key=lambda x: x.scope)
+    for i in wf_list:
+        index = all_wf.index(i)
+        print(f"[{index}] {i.name} ({i.scope.upper()})")
+        
+# --run
+elif args.run:
+    wf_list = Workflow.read_all()
+    Workflow.run(wf_list[args.run[0]])
+
+# --remove-workflow
+elif args.remove_workflow:
+    wf_list = Workflow.read_all()
+    Workflow.remove(wf_list[args.remove_workflow[0]])
+
+# --add-workflow
+elif args.add_workflow:
+    # Al llamar se pasa PATH y --global si es global
+    if args.is_global:                 
+        Workflow.add(args.add_workflow[0], Scope.GLOBAL)
+    else:
+        Workflow.add(args.add_workflow[0], Scope.PRIVATE)

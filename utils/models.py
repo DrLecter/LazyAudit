@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
 
 class ScopeData:
     GLOBAL = "global"
@@ -35,7 +36,7 @@ class ProjectData:
     name : str
     description : str = ""
     status : StatusData = StatusData.ACTIVE
-    created : str = datetime.now().isoformat()
+    created : str = field(default_factory=lambda: datetime.now().isoformat())
 
 @dataclass
 class FindingData: 
@@ -51,3 +52,15 @@ class HostData:
     ports : list[str] = field(default_factory=list)
     services : list[str] = field(default_factory=list)
 
+@dataclass
+class ChecklistData:
+    group : str
+    task : str 
+    done : bool = False
+    scope : ScopeData = ScopeData.PRIVATE
+
+@dataclass
+class WorkflowData:
+    name : str
+    path : Path # Ruta completa al script
+    scope : ScopeData = ScopeData.PRIVATE

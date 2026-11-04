@@ -30,7 +30,6 @@ class Command(CommandData, common.CommonActions):
 
 class Variable(VariableData, common.CommonActions):
     file_path = PATHS.VARIABLES_FILE
-    pass
 
 class Project(ProjectData, common.CommonActions):
 
@@ -75,9 +74,10 @@ class Project(ProjectData, common.CommonActions):
     # Recibe un Project y crea el directorio, los archivos y llena el project.json
     @classmethod
     def add(cls, new_project : "Project") -> None:
-        base_files = ["commands.json", "findings.json", "hosts.json", "variables.json"]
+        base_files = ["commands.json", "findings.json", "hosts.json", "variables.json", "checklists.json"]
         project_dir = Path(PATHS.PROJECTS_DIR/new_project.name)
         project_dir.mkdir(parents=True, exist_ok=True)
+        (project_dir / "workflows").mkdir(exist_ok=True)
         for path in base_files: 
             Path(project_dir/path).touch()
         common._save(project_dir/"project.json", new_project)
@@ -88,8 +88,9 @@ class Project(ProjectData, common.CommonActions):
         projects = PATHS.PROJECTS_DIR.iterdir()
         projects_list = []
         for i in projects:
-            item = common._extract_data(i / "project.json")
-            projects_list.extend(item)
+            if i.is_dir():
+                item = common._extract_data(i / "project.json")
+                projects_list.extend(item)
         return [cls(**item) for item in projects_list]
 
 
@@ -105,6 +106,13 @@ class Project(ProjectData, common.CommonActions):
             if (PATHS.PROJECTS_DIR / new_project).exists():
                 with open(PATHS.CONFIG_FILE, "w") as f:
                     json.dump( {"project": new_project}, f, indent=4, ensure_ascii=False)
+                PATHS.reload_paths()
+                Command.file_path = PATHS.COMMANDS_FILE
+                Variable.file_path = PATHS.VARIABLES_FILE
+                Project.file_path = PATHS.PROJECT_FILE
+                Finding.file_path = PATHS.FINDINGS_FILE
+                Host.file_path = PATHS.HOSTS_FILE
+                Checklist.file_path = PATHS.CHECKLISTS_FILE
         #        print(f"[+] Proyecto cambiado a: {new_project}")
         #else: 
         #    print(f"[!] Proyecto no existente")
@@ -113,8 +121,66 @@ class Project(ProjectData, common.CommonActions):
 
 class Finding(FindingData, common.CommonActions):
     file_path = PATHS.FINDINGS_FILE
-    pass
 
 class Host(HostData, common.CommonActions):
     file_path = PATHS.HOSTS_FILE
-    pass
+
+class Checklist(ChecklistData, common.CommonActions):
+    @classmethod 
+    def toggle(cls, item):
+        if item.done == False:
+            item.done = True
+        else:
+            item.done = False
+        pass
+
+        return item
+
+    file_path = PATHS.CHECKLISTS_FILE
+
+    @classmethod
+    def change_scope(cls, group: str, new_scope: str):
+        items = cls.read_all()
+        for i in items:
+            if i.group.lower() == group.lower():
+                i.scope = new_scope
+        common._save(cls.file_path, items)
+
+class Workflow(WorkflowData, common.CommonActions):
+    # Devuelve una lista de Models 
+    @classmethod
+    def read_all(cls):
+        workflows_list = []
+        for wf_file in PATHS.GLOBAL_WORKFLOWS_DIR.iterdir():
+            if wf_file.is_file():
+                wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.GLOBAL)
+                workflows_list.append(wf)
+        for wf_file in PATHS.WORKFLOWS_DIR.iterdir():
+            if wf_file.is_file():
+                wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.PRIVATE)
+                workflows_list.append(wf)
+
+        workflows_list.sort(key=lambda x: x.scope)
+        return workflows_list
+
+    # Recibe un Path (del script a agregar) y el scope y lo agrega a la respectiva carpeta
+    @classmethod
+    def add(cls, script_path, scope=Scope.PRIVATE):
+        from shutil import copy
+        if scope == Scope.GLOBAL:
+            copy(script_path, PATHS.GLOBAL_WORKFLOWS_DIR)
+        else:
+            copy(script_path, PATHS.WORKFLOWS_DIR)   
+
+    @classmethod
+    def remove(cls, workflow : "Workflow"):
+        Path(workflow.path).unlink()
+
+    @classmethod
+    def run(cls, workflow : "Workflow"):
+        import subprocess
+        if workflow.name.endswith(".sh"):
+            subprocess.run(["bash", workflow.path])
+        elif workflow.name.endswith(".py"):
+            subprocess.run(["python3", workflow.path])
+

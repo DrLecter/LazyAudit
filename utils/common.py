@@ -27,7 +27,7 @@ def _save(file_path : Path, data : list) -> None:
     if not isinstance(data, list): 
         data = [data]
 
-    if file_path.name == "commands.json" or file_path.name == "variables.json":
+    if file_path.name in ("commands.json", "variables.json", "checklists.json"):
         from models import ScopeData
         global_list = []
         private_list = []
@@ -41,9 +41,10 @@ def _save(file_path : Path, data : list) -> None:
 
         if file_path.name == "commands.json":
             _write_json(PATHS.GLOBAL_COMMANDS_FILE, global_list)
-        else:
+        elif file_path.name == "variables.json":
             _write_json(PATHS.GLOBAL_VARS_FILE, global_list)
-        
+        elif file_path.name == "checklists.json":
+            _write_json(PATHS.GLOBAL_CHECKLISTS_FILE, global_list)        
         _write_json(file_path, private_list)
     else:
         _write_json(file_path, data)
@@ -87,34 +88,32 @@ class CommonActions():
     # Cambia el Scope de los modelos con Scope.
     # Command.change_scope(Command)
     @classmethod
-    def change_scope(cls, new_model):
+    def change_scope(cls, item):
         from actions import Scope
-        model_list = cls.read_all()
-        for i in model_list:
-            if i == new_model:
-                if new_model.scope == Scope.PRIVATE:
-                    new_model.scope = Scope.GLOBAL
-                else:
-                    new_model.scope = Scope.PRIVATE
-                cls.modify(i, new_model)
-                break
+        if item.scope == Scope.PRIVATE:
+            item.scope = Scope.GLOBAL
+        else:
+            item.scope = Scope.PRIVATE
+        return item
 
     # Lee el json y devuelve una lista de objetos
     # Command/Host/Variable.read_all()
     @classmethod
     def read_all(cls) -> list:
-        project_file : Path = cls.file_path
+        data_file : Path = cls.file_path
         global_file = None
         data = []
 
-        if project_file.name == "commands.json":
+        if data_file.name == "commands.json":
             global_file = PATHS.GLOBAL_COMMANDS_FILE
-        if project_file.name == "variables.json":
+        elif data_file.name == "variables.json":
             global_file = PATHS.GLOBAL_VARS_FILE
+        elif data_file.name == "checklists.json":
+            global_file = PATHS.GLOBAL_CHECKLISTS_FILE
 
         # Si el archivo no existe o pesa 0 retorna la lista vacía
-        if project_file.exists() and project_file.stat().st_size != 0:
-            data.extend(_extract_data(project_file))
+        if data_file.exists() and data_file.stat().st_size != 0:
+            data.extend(_extract_data(data_file))
 
         if global_file and global_file.exists() and global_file.stat().st_size != 0:
             data.extend(_extract_data(global_file))

@@ -1,0 +1,14 @@
+[
+    {
+        "group": "active directory",
+        "task": "Verificar sesiones nulas de SMB y LDAP anónimo",
+        "done": true,
+        "scope": "private"
+    },
+    {
+        "group": "active directory",
+        "task": "Buscar cuentas vulnerables a AS-REP Roasting y Kerberoasting",
+        "done": false,
+        "scope": "private"
+    }
+]

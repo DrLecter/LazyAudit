@@ -1,0 +1,56 @@
+[
+    {
+        "group": "recon",
+        "task": "Escaneo completo de puertos TCP con Nmap (-p-)",
+        "done": true,
+        "scope": "private"
+    },
+    {
+        "group": "web",
+        "task": "Fuzzing de directorios y archivos ocultos (ffuf/gobuster)",
+        "done": false,
+        "scope": "private"
+    },
+    {
+        "group": "active directory",
+        "task": "Verificar sesiones nulas de SMB y LDAP anónimo",
+        "done": true,
+        "scope": "private"
+    },
+    {
+        "group": "recon",
+        "task": "Enumeración de subdominios y virtual hosts",
+        "done": false,
+        "scope": "private"
+    },
+    {
+        "group": "post-exploitation",
+        "task": "Relevar privilegios locales (sudo -l / SUID / LinPEAS)",
+        "done": false,
+        "scope": "private"
+    },
+    {
+        "group": "web",
+        "task": "Inspeccionar cabeceras de seguridad HTTP y cookies",
+        "done": true,
+        "scope": "private"
+    },
+    {
+        "group": "active directory",
+        "task": "Buscar cuentas vulnerables a AS-REP Roasting y Kerberoasting",
+        "done": false,
+        "scope": "private"
+    },
+    {
+        "group": "recon",
+        "task": "Escaneo de los 100 puertos UDP más comunes",
+        "done": false,
+        "scope": "private"
+    },
+    {
+        "group": "post-exploitation",
+        "task": "Volcado de credenciales en memoria / archivos de configuración",
+        "done": false,
+        "scope": "private"
+    }
+]
