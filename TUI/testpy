@@ -1,0 +1,20 @@
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT_DIR))
+sys.path.append(str(ROOT_DIR / "utils"))
+
+from utils.actions import *
+
+def count(model):
+    if model == Project:
+        total = len(Project.show())
+    else:
+        total = len(model.read_all())
+
+    return total
+
+a = Project.show()
+a.sort(key=lambda x: x.name)
+print(a)
