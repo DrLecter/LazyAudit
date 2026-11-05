@@ -30,14 +30,16 @@ class EditProjectModal(ModalScreen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "save_btn":
-            nuevo_nombre = self.query_one("#inp_name", Input).value
-            nueva_desc = self.query_one("#inp_desc", Input).value
-            nuevo_status = self.query_one("#sel_status", Select).value
+            new_name = self.query_one("#inp_name", Input).value
+            new_desc = self.query_one("#inp_desc", Input).value
+            new_status = self.query_one("#sel_status", Select).value
+            date = self.proyecto.created
 
             self.dismiss({
-                "name": nuevo_nombre,
-                "description": nueva_desc,
-                "status": nuevo_status
+                "name": new_name,
+                "description": new_desc,
+                "status": new_status,
+                "created": date
             })
 
         elif event.button.id == "cancel_btn":

@@ -29,5 +29,14 @@
             "ejecucion"
         ],
         "scope": "private"
+    },
+    {
+        "title": "lalalal",
+        "command": "lalala {RHOST} lalalal",
+        "description": "lalalal",
+        "tags": [
+            "la la la la"
+        ],
+        "scope": "private"
     }
 ]

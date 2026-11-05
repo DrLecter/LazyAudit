@@ -36,7 +36,7 @@ class ProjectData:
     name : str
     description : str = ""
     status : StatusData = StatusData.ACTIVE
-    created : str = field(default_factory=lambda: datetime.now().isoformat())
+    created : str = field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d"))
 
 @dataclass
 class FindingData: 

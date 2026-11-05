@@ -7,14 +7,8 @@ sys.path.append(str(ROOT_DIR / "utils"))
 
 from utils.actions import *
 
-def count(model):
-    if model == Project:
-        total = len(Project.show())
-    else:
-        total = len(model.read_all())
+#comando = next((c for c in Command.read_all() if c.title == ''), None)
 
-    return total
+tags = ["asd","asd","asd"]
 
-a = Project.show()
-a.sort(key=lambda x: x.name)
-print(a)
+print(a for a in tags)

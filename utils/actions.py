@@ -54,7 +54,7 @@ class Project(ProjectData, common.CommonActions):
                 from shutil import rmtree
                 rmtree(project_dir)
             else:
-                print("[!] Proyecto activo")
+                pass
         else:
             print("[!] Proyecto inexistente")
 
@@ -71,7 +71,7 @@ class Project(ProjectData, common.CommonActions):
             project_dir.rename(project_dir.parent/new_project.name)
             cls.change(new_project.name)
 
-    # Recibe un Project y crea el directorio, los archivos y llena el project.json
+    # Recibe un Project y crea el directorio, los archivos y llena el project.json 
     @classmethod
     def add(cls, new_project : "Project") -> None:
         base_files = ["commands.json", "findings.json", "hosts.json", "variables.json", "checklists.json"]
@@ -91,7 +91,7 @@ class Project(ProjectData, common.CommonActions):
             if i.is_dir():
                 item = common._extract_data(i / "project.json")
                 projects_list.extend(item)
-        return [cls(**item) for item in projects_list]
+        return sorted([cls(**item) for item in projects_list], key=lambda x: x.name)
 
 
     # Recibe un nombre de proyecto y setea la variable ACTIVE_PROJECT

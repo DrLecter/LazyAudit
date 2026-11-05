@@ -1,8 +1,8 @@
 [
     {
         "name": "audit_test1",
-        "description": "",
-        "status": "active",
-        "created": "2026-11-02T00:20:56.552882"
+        "description": "Decripcion de ejemplo del proyecto",
+        "status": "paused",
+        "created": "2026-11-04T23:23:19.959873"
     }
 ]
