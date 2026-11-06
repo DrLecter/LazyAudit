@@ -10,7 +10,7 @@ class RemoveProjectModal(ModalScreen):
         self.project = project
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="model_edit_project"):
+        with Vertical(id="model_remove_project"):
             yield Label(f"Borrar?", id="model_title")
 
             yield Label(" Nombre:")

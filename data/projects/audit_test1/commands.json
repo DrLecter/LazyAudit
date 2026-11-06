@@ -22,11 +22,11 @@
         "scope": "private"
     },
     {
-        "title": "bbbb",
-        "command": "ejecutar tal script",
-        "description": "ejecuta el script tanto",
+        "title": "comando modificado de prueb",
+        "command": "comando de prueba",
+        "description": "asd",
         "tags": [
-            "ejecucion"
+            "asd comando test"
         ],
         "scope": "private"
     },
@@ -37,6 +37,13 @@
         "tags": [
             "la la la la"
         ],
+        "scope": "private"
+    },
+    {
+        "title": "my_test_cmd",
+        "command": "ls -la",
+        "description": "desc",
+        "tags": "a, b",
         "scope": "private"
     }
 ]

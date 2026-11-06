@@ -15,7 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
 
-from TUI.modals.commands.edit import EditCommandModal
+from TUI.modals.commands.modify import ModifyCommandModal
 from TUI.modals.commands.add import AddCommandModal
 from TUI.modals.commands.remove import RemoveCommandModal
 
@@ -33,7 +33,7 @@ class CommandsTab(TabPane):
             #Columna izq.
             with Vertical():
                 yield Label(f"COMANDOS")
-                yield DataTable(id="commands_table") # Mostrar title y scope
+                yield DataTable(show_header=False, id="commands_table") # Mostrar title y scope
 
             #Columna der.
             with Vertical():
@@ -58,6 +58,7 @@ class CommandsTab(TabPane):
         table.clear() # Limpia las filas anteriores
         
         commands = Command.read_all()
+        commands.sort(key=lambda x: x.title.casefold())
 
         for c in commands:
             table.add_row(c.title, c.scope, key=c.title)
@@ -66,9 +67,9 @@ class CommandsTab(TabPane):
         if event.data_table.id == "commands_table":
             command_name = str(event.row_key.value)
 
-            command = next((c for c in Command.read_all() if c.title == command_name), None)
+            self.current_command = next((c for c in Command.read_all() if c.title == command_name), None)
 
-            self.update_command_info(command) # Command()
+            self.update_command_info(self.current_command) # Command()
 
     def update_command_info(self, command : "Command") -> None:
         if command:
@@ -88,52 +89,44 @@ class CommandsTab(TabPane):
     def add_command(self, data) -> None:
         if data is not None:
             clean_tags = [t.strip() for t in data["tags"].split(",") if t.strip()] if data["tags"] else []
-            command = Command(title=data["title"], description=data["description"], command=data["command"], scope=data["scope"], tags=clean_tags)
+            command = Command(**data)
             Command.add(command)
             self.load_commands_table()
             self.update_command_info(command)
             self.app.notify("Comando creado con éxito!")
 
-    #def action_modify_project(self) -> None:
-    #    proyectos = Project.show()
-    #    project = next((proj for proj in proyectos if proj.name == PATHS.ACTIVE_PROJECT), None)
+    def action_modify_command(self) -> None:
+        if self.current_command:
+            self.app.push_screen(ModifyCommandModal(self.current_command), self.modify_command)
+        else:
+            self.app.notify("Comando no seleccionado!")
 
-    #    if project:
-    #        self.app.push_screen(EditCommandModal(project), self.modify_project)
+    def modify_command(self, data) -> None:
+        if data is not None:
+            clean_tags = data["tags"].split(",")
+            new_command = Command(title=data["title"], description=data["description"], command=data["command"], scope=data["scope"], tags=clean_tags)
+            Command.modify(self.current_command, new_command)
+            self.load_commands_table()
+            self.update_command_info(new_command)
+            self.app.notify("¡Proyecto actualizado con éxito!")
 
-    #def modify_project(self, data) -> None:
-    #    if data is not None:
-    #        Project.modify(Project(name=data["name"], description=data["description"], status=data["status"], created=data["created"]))
-    #        self.load_projects_table()
-    #        self.update_project_info(data["name"])
-    #        self.app.notify("¡Proyecto actualizado con éxito!")
+    def action_remove_command(self) -> None:
+        self.app.push_screen(RemoveCommandModal(self.current_command), self.remove_command)
 
-    #def action_remove_project(self) -> None:
-    #    proyectos = Project.show()
-    #    project = next((proj for proj in proyectos if proj.name == PATHS.ACTIVE_PROJECT), None)
-
-    #    self.app.push_screen(RemoveCommandModal(project), self.remove_project)
-
-    #def remove_project(self, project_name) -> None:
-    #    if project_name is not None:
-    #        project_name = project_name["name"]
-
-    #        available_projects = [p.name for p in Project.show() if p.name != project_name]
-
-    #        if available_projects:
-    #            Project.change(available_projects[0])
-    #            Project.remove(project_name)     
-    #            self.load_projects_table()
-    #            self.update_project_info(available_projects[0])
-    #            self.app.notify("¡Proyecto eliminado con éxito!")
-    #        else:
-    #            self.app.notify("No podés eliminar el único proyecto existente", severity="warning")
+    def remove_command(self, command) -> None:
+        Command.remove(command)     
+        commands = Command.read_all()
+        if commands:
+            self.update_command_info(commands[0])
+        self.load_commands_table()
+        self.update_command_info(commands[0])
+        self.app.notify("¡Comando eliminado con éxito!")
 
     def on_show(self) -> None:
         self.load_commands_table()
-        cmds = Command.read_all()
-        if cmds:
-            self.update_command_info(cmds[0])
-        self.query_one("#commands_table", DataTable).focus()
+        commands = Command.read_all()
+        if commands:
+            self.update_command_info(commands[0])
+        self.query_one("#commands_table", DataTable)
          
 

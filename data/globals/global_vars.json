@@ -2,13 +2,13 @@
     {
         "key": "LHOST",
         "value": "127.0.0.1",
-        "scope": "global",
-        "description": "IP local del atacante por defecto"
+        "description": "IP local del atacante por defecto",
+        "scope": "global"
     },
     {
         "key": "LPORT",
         "value": "4444",
-        "scope": "global",
-        "description": "Puerto local de escucha por defecto"
+        "description": "Puerto local de escucha por defecto",
+        "scope": "global"
     }
 ]

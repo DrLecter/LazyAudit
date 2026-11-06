@@ -44,6 +44,7 @@ class FindingData:
     description : str
     vulns : list[str] = field(default_factory=list)
     severity : SeverityData = SeverityData.LOW
+    # Se puede agregar estado (abierto o cerrado)
 
 @dataclass
 class HostData: 

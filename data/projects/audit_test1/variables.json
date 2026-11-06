@@ -2,19 +2,25 @@
     {
         "key": "RHOST",
         "value": "10.10.20.15",
-        "scope": "private",
-        "description": "Controlador de dominio principal"
+        "description": "Controlador de dominio principal",
+        "scope": "private"
     },
     {
         "key": "DOMAIN",
         "value": "corp.local",
-        "scope": "private",
-        "description": "Dominio Active Directory objetivo"
+        "description": "Dominio Active Directory objetivo",
+        "scope": "private"
     },
     {
         "key": "USER",
         "value": "auditor01",
-        "scope": "private",
-        "description": "Usuario de pruebas asignado"
+        "description": "Usuario de pruebas asignado",
+        "scope": "private"
+    },
+    {
+        "key": "TEST_KEY",
+        "value": "TEST_VAL",
+        "description": "TEST_DESC",
+        "scope": "private"
     }
 ]

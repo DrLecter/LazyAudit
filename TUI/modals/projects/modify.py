@@ -3,14 +3,14 @@ from textual.app import ComposeResult
 from textual.widgets import Label, Input, Button, Select
 from textual.containers import Vertical, Horizontal
 
-class EditProjectModal(ModalScreen):
+class ModifyProjectModal(ModalScreen):
 
     def __init__(self, proyecto):
         super().__init__()
         self.proyecto = proyecto
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="model_edit_project"):
+        with Vertical(id="model_odify_project"):
             yield Label(f"Editar: {self.proyecto.name}", id="model_title")
 
             yield Label(" Nombre:")

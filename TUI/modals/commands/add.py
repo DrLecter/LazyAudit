@@ -26,8 +26,7 @@ class AddCommandModal(ModalScreen):
 
             yield Label(" Scope:")
 
-            yield Select([("Privado", "private"), ("Global", "global")],
-                            value="private", id="sel_scope")
+            yield Select([("Privado", "private"), ("Global", "global")], value="private", id="sel_scope")
 
             with Horizontal(id="modal_btns"):
                 yield Button("Guardar", variant="primary", id="save_btn")

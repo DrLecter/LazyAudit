@@ -5,23 +5,23 @@ from textual.containers import Vertical, Horizontal
 
 class RemoveCommandModal(ModalScreen):
 
-    def __init__(self, project):
+    def __init__(self, command):
         super().__init__()
-        self.project = project
+        self.command = command
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="model_edit_project"):
+        with Vertical(id="model_remove_command"):
             yield Label(f"Borrar?", id="model_title")
 
             yield Label(" Nombre:")
-            yield Label(f"{self.project.name}", id="lbl_name")
+            yield Label(f"{self.command.title}", id="lbl_name")
 
-            yield Label(" Descripción:")
-            yield Label(f"{self.project.description}", id="lbl_desc")
+            yield Label(" Comando:")
+            yield Label(f"{self.command.command}", id="lbl_desc")
 
-            yield Label(" Estado:")
+            yield Label(" Scope:")
 
-            yield Label(f"{self.project.status}", id="lbl_status")
+            yield Label(f"{self.command.scope}", id="lbl_status")
 
             with Horizontal(id="modal_btns"):
                 yield Button("Confirmar", variant="primary", id="confirm_btn")
@@ -29,11 +29,7 @@ class RemoveCommandModal(ModalScreen):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "confirm_btn":
-            project_name = self.project.name
-
-            self.dismiss({
-                "name": project_name
-            })
+            self.dismiss(self.command)
 
         elif event.button.id == "cancel_btn":
             self.dismiss(None)

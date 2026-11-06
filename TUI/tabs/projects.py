@@ -15,7 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
 
-from TUI.modals.projects.edit import EditProjectModal
+from TUI.modals.projects.modify import ModifyProjectModal
 from TUI.modals.projects.add import AddProjectModal
 from TUI.modals.projects.remove import RemoveProjectModal
 
@@ -33,7 +33,7 @@ class ProjectsTab(TabPane):
             #Columna izq.
             with Vertical():
                 yield Label(f"PROYECTOS")
-                yield DataTable(id="projects_table")
+                yield DataTable(show_header=False, id="projects_table")
 
             #Columna der.
             with Vertical():
@@ -92,7 +92,7 @@ class ProjectsTab(TabPane):
         project = next((proj for proj in proyectos if proj.name == PATHS.ACTIVE_PROJECT), None)
 
         if project:
-            self.app.push_screen(EditProjectModal(project), self.modify_project)
+            self.app.push_screen(ModifyProjectModal(project), self.modify_project)
 
     def action_add_project(self) -> None:
         self.app.push_screen(AddProjectModal(), self.add_project)
@@ -105,7 +105,7 @@ class ProjectsTab(TabPane):
 
     def modify_project(self, data) -> None:
         if data is not None:
-            Project.modify(Project(name=data["name"], description=data["description"], status=data["status"], created=data["created"]))
+            Project.modify(Project(**data))
             self.load_projects_table()
             self.update_project_info(data["name"])
             self.app.notify("¡Proyecto actualizado con éxito!")
@@ -145,13 +145,13 @@ class ProjectsTab(TabPane):
             self.query_one("#grid_project_status", Label).update(f"{p.status}")
 
             self.query_one("#count_hosts", Label).update(f"Hosts\n{self._count(Host)}")
-            self.query_one("#count_findings", Label).update(f"Findings\n{self._count(Finding)}")
+            self.query_one("#count_findings", Label).update(f"Hallazgos\n{self._count(Finding)}")
             self.query_one("#count_variables", Label).update(f"Variables\n{self._count(Variable)}")
-            self.query_one("#count_commands", Label).update(f"Commands\n{self._count(Command)}")
+            self.query_one("#count_commands", Label).update(f"Comandos\n{self._count(Command)}")
 
     def on_show(self) -> None:
         self.load_projects_table()
         self.update_project_info(PATHS.ACTIVE_PROJECT)
-        self.query_one("#projects_table", DataTable).focus()
+        self.query_one("#projects_table", DataTable)
          
 
