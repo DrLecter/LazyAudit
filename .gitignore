@@ -221,5 +221,7 @@ __marimo__/
 project_info/
 docs_private/
 el_rincon_de_gemini/
-
-
+lazyaudit/data/globals/*
+lazyaudit/data/globals/workflows/*
+!lazyaudit/data/globals/workflows
+lazyaudit/projects*
