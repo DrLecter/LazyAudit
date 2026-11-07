@@ -1,0 +1,152 @@
+[
+    {
+        "group": "OWASP Top 10",
+        "task": "A01:2021 - Broken Access Control (IDOR, escalada horizontal/vertical)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A02:2021 - Cryptographic Failures (tráfico plano, certs, hashes débiles)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A03:2021 - Injection (SQLi, NoSQLi, Command Injection, SSTI)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A04:2021 - Insecure Design (lógica de negocio, falta de rate limiting)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A05:2021 - Security Misconfiguration (páginas por defecto, debug activo)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A06:2021 - Vulnerable and Outdated Components (CVEs en librerías/frameworks)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A07:2021 - Identification & Authentication Failures (fuerza bruta, bypass MFA)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A08:2021 - Software & Data Integrity Failures (deserialización insegura)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A09:2021 - Security Logging & Monitoring Failures (omisión de logs/alertas)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "OWASP Top 10",
+        "task": "A10:2021 - Server-Side Request Forgery (SSRF local y hacia la nube)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Reconocimiento y Red",
+        "task": "Barrido de hosts activos (ICMP, ARP, TCP ping)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Reconocimiento y Red",
+        "task": "Escaneo de puertos TCP full (0-65535) y top 100 UDP",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Reconocimiento y Red",
+        "task": "Detección de versiones de servicios y banners",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Reconocimiento y Red",
+        "task": "Identificación de sistemas operativos y firewalls/WAF",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Infraestructura",
+        "task": "Verificar versiones obsoletas con exploits públicos conocidos",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Infraestructura",
+        "task": "Auditar configuraciones de SSL/TLS (cifrados débiles, heartbleed)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Infraestructura",
+        "task": "Probar credenciales por defecto en servicios críticos (SSH, RDP, SNMP, bases)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Infraestructura",
+        "task": "Comprobar accesos anónimos (FTP anónimo, SMB null session, NFS shares)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Active Directory TEST",
+        "task": "Enumeración de usuarios, grupos y equipos del dominio",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Active Directory TEST",
+        "task": "Ataques AS-REP Roasting a cuentas sin pre-autenticación Kerberos",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Active Directory TEST",
+        "task": "Ataques Kerberoasting a Service Principal Names (SPN)",
+        "done": true,
+        "scope": "global"
+    },
+    {
+        "group": "Active Directory TEST",
+        "task": "Análisis de relaciones de confianza y rutas de ataque con BloodHound",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Post-Explotación",
+        "task": "Recolección de credenciales locales (SAM, LSASS, mimikatz)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Post-Explotación",
+        "task": "Identificación de vectores de escalada de privilegios local (LPE)",
+        "done": false,
+        "scope": "global"
+    },
+    {
+        "group": "Post-Explotación",
+        "task": "Limpieza de artefactos y archivos temporales generados",
+        "done": false,
+        "scope": "global"
+    }
+]

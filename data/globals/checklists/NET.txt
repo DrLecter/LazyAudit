@@ -1,8 +1,0 @@
-[ ] Identificar hosts activos
-[ ] Identificar puertos abiertos
-[ ] Identificar servicios
-[ ] Identificar versiones
-[ ] Identificar sistemas operativos
-[ ] Revisar servicios expuestos
-[ ] Revisar configuraciones inseguras
-[ ] Registrar resultados relevantes
