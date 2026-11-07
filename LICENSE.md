@@ -5,9 +5,9 @@ CC0 1.0 Universal / Creative Commons Attribution-NonCommercial-ShareAlike 4.0 In
 
 Copyright (c) 2026 Franco Luciano Merlo
 
-================================================================================
+=============================================
 TÉRMINOS Y CONDICIONES PARA USO, COPIA, DISTRIBUCIÓN Y MODIFICACIÓN
-================================================================================
+=============================================
 
 Por la presente se concede permiso, libre de cargos, a cualquier persona que obtenga 
 una copia de este software y de los archivos de documentación asociados (el "Software"), 
@@ -33,9 +33,9 @@ del Software, bajo las siguientes condiciones estrictas:
    Cualquier redistribución o derivado debe mantener el código fuente disponible de 
    forma libre y gratuita para la comunidad.
 
-================================================================================
+=============================================
 EXCLUSIÓN DE RESPONSABILIDAD (DISCLAIMER)
-================================================================================
+=============================================
 
 EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O 
 IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD 
