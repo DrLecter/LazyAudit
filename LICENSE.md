@@ -6,7 +6,6 @@ CC0 1.0 Universal / Creative Commons Attribution-NonCommercial-ShareAlike 4.0 In
 Copyright (c) 2026 Franco Luciano Merlo
 
 # TÉRMINOS Y CONDICIONES PARA USO, COPIA, DISTRIBUCIÓN Y MODIFICACIÓN
-___
 
 Por la presente se concede permiso, libre de cargos, a cualquier persona que obtenga 
 una copia de este software y de los archivos de documentación asociados (el "Software"), 
@@ -14,7 +13,7 @@ para utilizar, estudiar, copiar, modificar, fusionar, publicar y distribuir copi
 del Software, bajo las siguientes condiciones estrictas:
 
 1. ATRIBUCIÓN (Attribution):
-   Debe otorgar el crédito correspondiente al autor original (Franco Luciano Merlo),
+   Debe otorgar el crédito correspondiente al autor original (franlumer),
    proporcionar un enlace a este aviso de licencia e indicar si se realizaron cambios.
 
 2. NO COMERCIAL (Non-Commercial - PROHIBIDA SU VENTA):
@@ -33,7 +32,6 @@ del Software, bajo las siguientes condiciones estrictas:
    forma libre y gratuita para la comunidad.
 
 # EXCLUSIÓN DE RESPONSABILIDAD (DISCLAIMER)
-___
 
 EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O 
 IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD 
