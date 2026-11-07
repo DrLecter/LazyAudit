@@ -1,0 +1,11 @@
+[
+    {
+        "host": "172.16.50.10",
+        "description": "API REST vulnerable a IDOR en endpoint de perfiles",
+        "vulns": [
+            "Broken Object Level Authorization (IDOR)",
+            "Excessive Data Exposure"
+        ],
+        "severity": "high"
+    }
+]

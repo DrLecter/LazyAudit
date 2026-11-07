@@ -1,0 +1,14 @@
+[
+    {
+        "key": "RHOST",
+        "value": "172.16.50.10",
+        "scope": "private",
+        "description": "Servidor de la aplicación web"
+    },
+    {
+        "key": "TARGET_URL",
+        "value": "https://portal.testcorp.local",
+        "scope": "private",
+        "description": "URL base del portal auditado"
+    }
+]

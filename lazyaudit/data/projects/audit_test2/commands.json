@@ -1,0 +1,24 @@
+[
+    {
+        "title": "Nuclei escaneo de templates web",
+        "command": "nuclei -u {TARGET_URL} -t cves/ -t exposures/",
+        "description": "Escaneo automatizado de CVEs y exposiciones en aplicación web",
+        "tags": [
+            "web",
+            "nuclei",
+            "vuln-scan"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "FFUF descubrimiento de endpoints API",
+        "command": "ffuf -u {TARGET_URL}/api/v1/FUZZ -w /usr/share/wordlists/api_endpoints.txt -mc 200,204,301,403",
+        "description": "Fuzzing de rutas en API REST",
+        "tags": [
+            "api",
+            "fuzzing",
+            "web"
+        ],
+        "scope": "private"
+    }
+]

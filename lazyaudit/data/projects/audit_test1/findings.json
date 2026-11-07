@@ -1,0 +1,18 @@
+[
+    {
+        "host": "10.10.20.22",
+        "description": "Panel de administración web sin HTTPS",
+        "vulns": [
+            "Cleartext Transmission of Sensitive Information"
+        ],
+        "severity": "medium"
+    },
+    {
+        "host": "WebMail",
+        "description": "cloudserver con exposicion de info en /TEMP",
+        "vulns": [
+            "exposición de información sensible"
+        ],
+        "severity": "high"
+    }
+]

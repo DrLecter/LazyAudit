@@ -1,0 +1,30 @@
+[
+    {
+        "ip": "10.10.20.15",
+        "hostname": "dc01.corp.local",
+        "ports": [
+            "53",
+            "88",
+            "389",
+            "445"
+        ],
+        "services": [
+            "Simple DNS Plus",
+            "Kerberos",
+            "Microsoft Windows AD LDAP",
+            "Microsoft-DS SMB"
+        ]
+    },
+    {
+        "ip": "10.10.20.22",
+        "hostname": "intranet.corp.local",
+        "ports": [
+            "80",
+            "8080"
+        ],
+        "services": [
+            "Microsoft IIS httpd 10.0",
+            "Apache Tomcat 9.0"
+        ]
+    }
+]
