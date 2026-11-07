@@ -25,3 +25,7 @@ LazyAudit asume un modelo de **responsabilidad compartida**. La herramienta sani
 ## 👨‍💻 Autor
 **Franco Luciano Merlo** (franlumer)
 *Licenciatura en Seguridad Informática - Universidad Siglo 21*
+
+___
+
+Actualmente LazyAudit se encuentra en una fase extremadamente temprana dentro de su ciclo de vida, actualmente presentado como un bosquejo de su potencial. LazyAudit prevé la integración de numerosas herramientas y funcionalidades con el objetivo de facilitar la integración de automatizaciones, la organización y estructuración de información recogida durante las auditorías y la información generada para reportes empresariales. Más actualizaciones pronto...
