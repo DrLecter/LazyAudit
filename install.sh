@@ -23,5 +23,3 @@ EOF'
 sudo chmod +x /usr/local/bin/lazyaudit
 
 echo "[+] Instalación finalizada con éxito."
-
-lazyaudit --help
