@@ -95,19 +95,24 @@ class ProjectsTab(TabPane):
 
     def add_project(self, data) -> None:
         if data is not None:
-            project = Project(name=data["name"], description=data["description"], status=data["status"])
-            Project.add(project)
-            log(Event.PROJECT_CREATED, project)
-            Project.change(data["name"])
-            log(Event.PROJECT_CHANGED, data["name"])
-            self.load_projects_table()
-            self.update_project_info(data["name"])
-            self.app.notify("¡Proyecto creado con éxito!")
+            try:
+                project = Project(name=data["name"], description=data["description"], status=data["status"])
+                Project.add(project)
+                log(Event.PROJECT_CREATED, project)
+                Project.change(data["name"])
+                log(Event.PROJECT_CHANGED, data["name"])
+                self.load_projects_table()
+                self.update_project_info(data["name"])
+                self.app.notify("¡Proyecto creado con éxito!")
+            except ValueError as e:
+                self.app.notify(str(e), severity="error")
 
     def action_modify_project(self) -> None:
-        active_project = Project.read_all()[0]
-        if active_project:
-            self.app.push_screen(ModifyProjectModal(active_project), self.modify_project)
+        projects = Project.read_all()
+        if projects:
+            self.app.push_screen(ModifyProjectModal(projects[0]), self.modify_project)
+        else:
+            self.app.notify("No hay proyectos cargados. Creá uno con 'n'", severity="warning")
 
     def modify_project(self, data) -> None:
         if data is not None:
@@ -151,9 +156,9 @@ class ProjectsTab(TabPane):
             log(Event.PROJECT_REMOVED, target_name)
             self.load_projects_table()
             self.app.notify(f"Proyecto {target_name} eliminado con éxito!")
-            
+        
     def update_project_info(self, project_name : str) -> None:
-        self.app.sub_title = project_name
+        self.app.sub_title = project_name or "Sin Proyecto"
         proyectos = Project.show()
         p = next((proj for proj in proyectos if proj.name == project_name), None)
 
@@ -162,12 +167,17 @@ class ProjectsTab(TabPane):
             self.query_one("#grid_project_description", Label).update(f"{p.description}")
             self.query_one("#grid_project_created", Label).update(f"{p.created}")
             self.query_one("#grid_project_status", Label).update(f"{p.status}")
+        else:
+            self.query_one("#lbl_nombre_proyecto", Label).update("Sin proyectos")
+            self.query_one("#grid_project_description", Label).update("-")
+            self.query_one("#grid_project_created", Label).update("-")
+            self.query_one("#grid_project_status", Label).update("-")
 
-            self.query_one("#count_hosts", Label).update(f"Hosts\n{self._count(Host)}")
-            self.query_one("#count_findings", Label).update(f"Hallazgos\n{self._count(Finding)}")
-            self.query_one("#count_variables", Label).update(f"Variables\n{self._count(Variable)}")
-            self.query_one("#count_commands", Label).update(f"Comandos\n{self._count(Command)}")
-
+        self.query_one("#count_hosts", Label).update(f"Hosts\n{self._count(Host)}")
+        self.query_one("#count_findings", Label).update(f"Hallazgos\n{self._count(Finding)}")
+        self.query_one("#count_variables", Label).update(f"Variables\n{self._count(Variable)}")
+        self.query_one("#count_commands", Label).update(f"Comandos\n{self._count(Command)}")
+        
     def on_show(self) -> None:
         self.load_projects_table()
         self.update_project_info(PATHS.ACTIVE_PROJECT)

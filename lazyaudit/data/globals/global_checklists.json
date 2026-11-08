@@ -14,7 +14,7 @@
     {
         "group": "OWASP Top 10",
         "task": "A03:2021 - Injection (SQLi, NoSQLi, Command Injection, SSTI)",
-        "done": false,
+        "done": true,
         "scope": "global"
     },
     {
@@ -56,7 +56,7 @@
     {
         "group": "OWASP Top 10",
         "task": "A10:2021 - Server-Side Request Forgery (SSRF local y hacia la nube)",
-        "done": false,
+        "done": true,
         "scope": "global"
     },
     {
@@ -110,7 +110,7 @@
     {
         "group": "Active Directory TEST",
         "task": "Enumeración de usuarios, grupos y equipos del dominio",
-        "done": true,
+        "done": false,
         "scope": "global"
     },
     {

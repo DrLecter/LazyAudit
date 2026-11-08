@@ -9,7 +9,7 @@ import re
 # permite que se los llame directamente con la acción y se evita pasar el Path. 
 # Command.reead_all(), Variable.add(), etc.
 def _is_safe(name :str) -> bool:
-    return bool(re.match(r"^[a-zA-Z0-9_\-]+$", name))
+    return bool(re.match(r"^[a-zA-Z0-9_\- ]+$", name)) and ".." not in name and "/" not in name and "\\" not in name
 
 
 class Scope(ScopeData):
@@ -93,11 +93,14 @@ class Project(ProjectData, common.CommonActions):
     # Devuelve una lista de Models de los poyectos disponibles
     @classmethod
     def show(cls):
+        if not PATHS.PROJECTS_DIR.exists():
+            return []
         projects = PATHS.PROJECTS_DIR.iterdir()
         projects_list = []
         for i in projects:
-            if i.is_dir():
-                item = common._extract_data(i / "project.json")
+            project_file = i / "project.json"
+            if i.is_dir() and project_file.exists():
+                item = common._extract_data(project_file)
                 projects_list.extend(item)
         return sorted([cls(**item) for item in projects_list], key=lambda x: x.name)
 
@@ -159,14 +162,17 @@ class Workflow(WorkflowData, common.CommonActions):
     @classmethod
     def read_all(cls):
         workflows_list = []
-        for wf_file in PATHS.GLOBAL_WORKFLOWS_DIR.iterdir():
-            if wf_file.is_file():
-                wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.GLOBAL)
-                workflows_list.append(wf)
-        for wf_file in PATHS.WORKFLOWS_DIR.iterdir():
-            if wf_file.is_file():
-                wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.PRIVATE)
-                workflows_list.append(wf)
+        if PATHS.GLOBAL_WORKFLOWS_DIR.exists():
+            for wf_file in PATHS.GLOBAL_WORKFLOWS_DIR.iterdir():
+                if wf_file.is_file():
+                    wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.GLOBAL)
+                    workflows_list.append(wf)
+
+        if PATHS.WORKFLOWS_DIR.exists():
+            for wf_file in PATHS.WORKFLOWS_DIR.iterdir():
+                if wf_file.is_file():
+                    wf = Workflow(name=wf_file.name, path=Path(wf_file), scope=Scope.PRIVATE)
+                    workflows_list.append(wf)
 
         workflows_list.sort(key=lambda x: x.scope)
         return workflows_list

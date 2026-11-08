@@ -18,6 +18,8 @@ def _fuzzy_matches(query: str, text_fields: list[str], threshold: int = 86) -> b
 
 # Recibe el path donde guardar y una lista de objetos y los escribe en JSON
 def _write_json(file_path: Path, data : list) -> None:
+    # Asegura que el directorio exista antes de escribir el archivo
+    file_path.parent.mkdir(parents=True, exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump([asdict(item) for item in data], f, indent=4, ensure_ascii=False)
 
@@ -51,12 +53,14 @@ def _save(file_path : Path, data : list) -> None:
 
 # Recibe un json y extrae la info, devuelve una lista con dict.
 def _extract_data(json_file):
+    if not Path(json_file).exists():
+        return []
     try:
         with open(json_file, "r", encoding="utf-8") as f:
             data = json.load(f)
             
             return data
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, FileNotFoundError):
         return []
 
 # Acciones generales de los modelos (read, add, remove, modify, delete)

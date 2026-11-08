@@ -1,15 +1,5 @@
 [
     {
-        "title": "prueba0",
-        "command": "prueba {prueba} prueba",
-        "description": "prueba",
-        "tags": [
-            "prueba",
-            "prueba"
-        ],
-        "scope": "global"
-    },
-    {
         "title": "WinPeas",
         "command": "./winpwas.sh {RHOST}",
         "description": "WinPeas for Windows info.",

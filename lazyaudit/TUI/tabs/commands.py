@@ -62,16 +62,16 @@ class CommandsTab(TabPane):
         commands = Command.read_all()
         commands.sort(key=lambda x: x.title.casefold())
 
-        for c in commands:
-            table.add_row(c.title, c.scope, key=c.title)
+        self._commands_cache = commands
+        for idx, c in enumerate(commands):
+            table.add_row(c.title, c.scope, key=str(idx))
 
-    def on_data_table_row_highlighted(self, event: DataTable.RowSelected) -> None:
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if event.data_table.id == "commands_table":
-            command_name = str(event.row_key.value)
-
-            self.current_command = next((c for c in Command.read_all() if c.title == command_name), None)
-
-            self.update_command_info(self.current_command) # Command()
+            idx = int(event.row_key.value)
+            if hasattr(self, "_commands_cache") and idx < len(self._commands_cache):
+                self.current_command = self._commands_cache[idx]
+                self.update_command_info(self.current_command)
 
     def update_command_info(self, command : "Command") -> None:
         if command:
@@ -90,6 +90,7 @@ class CommandsTab(TabPane):
 
     def add_command(self, data) -> None:
         if data is not None:
+            data["tags"] = [t.strip() for t in data["tags"].split(",") if t.strip()] if data.get("tags") else []
             command = Command(**data)
             Command.add(command)
             log(Event.COMMAND_CREATED, command)
@@ -106,7 +107,7 @@ class CommandsTab(TabPane):
     def modify_command(self, data) -> None:
         if data is not None:
             old_command = self.current_command
-            clean_tags = data["tags"].split(",")
+            clean_tags = [t.strip() for t in data["tags"].split(",") if t.strip()] if data.get("tags") else []
             new_command = Command(title=data["title"], description=data["description"], command=data["command"], scope=data["scope"], tags=clean_tags)
             Command.modify(self.current_command, new_command)
             log(Event.COMMAND_MODIFIED, {"old": old_command,"new":new_command})
