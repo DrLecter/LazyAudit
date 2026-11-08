@@ -195,8 +195,10 @@ class Workflow(WorkflowData, common.CommonActions):
         if not resolved.is_file():
             raise FileNotFoundError(f"No se encontró el script en '{script_path}' ni en '{PATHS.INBOX_DIR / Path(script_path).name}'")
         if scope == Scope.GLOBAL:
+            PATHS.GLOBAL_WORKFLOWS_DIR.mkdir(parents=True, exist_ok=True)
             copy(resolved, PATHS.GLOBAL_WORKFLOWS_DIR)
         else:
+            PATHS.WORKFLOWS_DIR.mkdir(parents=True, exist_ok=True)
             copy(resolved, PATHS.WORKFLOWS_DIR)   
 
     @classmethod
