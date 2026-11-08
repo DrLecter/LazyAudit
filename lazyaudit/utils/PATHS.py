@@ -12,6 +12,7 @@ CONFIG_FILE = DATA_DIR/"config.json"
 PROJECTS_DIR = DATA_DIR / "projects"
 LOGS_DIR = DATA_DIR/"logs"
 LOGS_FILE = LOGS_DIR/"lazyaudit.jsonl"
+INBOX_DIR = Path("/app/inbox")
 # ========== GLOBAL PATHS ==========
 GLOBAL_COMMANDS_FILE = GLOBAL_DIR/"global_commands.json"
 GLOBAL_VARS_FILE = GLOBAL_DIR/"global_vars.json"

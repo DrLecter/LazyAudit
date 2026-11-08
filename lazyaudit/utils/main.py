@@ -543,11 +543,12 @@ elif args.add_workflow:
         scope = Scope.GLOBAL
     else: 
         scope = Scope.PRIVATE
-    script_path = str(args.add_workflow[0])
-    Workflow.add(script_path, scope)
+    raw_path = str(args.add_workflow[0])
+    resolved_path = Workflow.resolve_script_path(raw_path)
+    Workflow.add(resolved_path, scope)
 
     log(Event.WORKFLOW_ADDED, {
-            "name": Path(script_path).name,
-            "path": script_path,
+            "name": resolved_path.name,
+            "path": str(resolved_path),
             "scope": scope
             })

@@ -22,8 +22,8 @@ class AddWorkflowModal(ModalScreen):
         with Vertical(id="modal_add_workflow"):
             yield Label("AÑADIR WORKFLOW", id="model_title")
 
-            yield Label(" Ruta al script (.py o .sh):")
-            yield Input(placeholder="/home/.../script.py", id="inp_path")
+            yield Label(" Archivo (.py o .sh en /app/inbox o ruta):")
+            yield Input(placeholder="script.py o /app/inbox/script.py", id="inp_path")
 
             yield Label(" Scope:")
             yield Select([("Privado", "private"), ("Global", "global")], value="private", id="sel_scope")
@@ -38,15 +38,16 @@ class AddWorkflowModal(ModalScreen):
             scope = self.query_one("#sel_scope", Select).value
 
             if not path_str:
-                self.app.notify("La ruta no puede estar vacía", severity="warning")
+                self.app.notify("El nombre de archivo no puede estar vacío", severity="warning")
                 return
 
-            p = Path(path_str)
+            from utils.actions import Workflow
+            p = Workflow.resolve_script_path(path_str)
             if not p.is_file():
-                self.app.notify(f"El archivo no existe: {path_str}", severity="error")
+                self.app.notify(f"No existe '{path_str}' ni en '/app/inbox/{path_str}'", severity="error")
                 return
 
-            if not (path_str.endswith(".py") or path_str.endswith(".sh")):
+            if not (p.name.endswith(".py") or p.name.endswith(".sh")):
                 self.app.notify("Solo se admiten archivos .py o .sh", severity="warning")
                 return
 

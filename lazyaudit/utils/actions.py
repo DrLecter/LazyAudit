@@ -179,12 +179,25 @@ class Workflow(WorkflowData, common.CommonActions):
 
     # Recibe un Path (del script a agregar) y el scope y lo agrega a la respectiva carpeta
     @classmethod
+    def resolve_script_path(cls, path_or_name: str | Path) -> Path:
+        p = Path(path_or_name)
+        if p.is_file():
+            return p
+        inbox_file = PATHS.INBOX_DIR / p.name
+        if inbox_file.is_file():
+            return inbox_file
+        return p
+
+    @classmethod
     def add(cls, script_path, scope=Scope.PRIVATE):
         from shutil import copy
+        resolved = cls.resolve_script_path(script_path)
+        if not resolved.is_file():
+            raise FileNotFoundError(f"No se encontró el script en '{script_path}' ni en '{PATHS.INBOX_DIR / Path(script_path).name}'")
         if scope == Scope.GLOBAL:
-            copy(script_path, PATHS.GLOBAL_WORKFLOWS_DIR)
+            copy(resolved, PATHS.GLOBAL_WORKFLOWS_DIR)
         else:
-            copy(script_path, PATHS.WORKFLOWS_DIR)   
+            copy(resolved, PATHS.WORKFLOWS_DIR)   
 
     @classmethod
     def remove(cls, workflow : "Workflow"):
