@@ -1,8 +1,3 @@
-/* ==========================================================================
-   LazyAudit — Minimalist Dark Theme
-   Limpio, sobrio y sin sobrecarga visual
-   ========================================================================== */
-
 Screen {
     background: #111217;
     color: #e1e2e7;
