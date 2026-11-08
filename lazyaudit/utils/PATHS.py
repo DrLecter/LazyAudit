@@ -3,11 +3,15 @@ import json
 
 # ========== LAZYAUDIT PATHS ==========
 LAZYAUDIT_DIR = Path(__file__).resolve().parent.parent
+UTILS_DIR = LAZYAUDIT_DIR/"utils"
+TUI_DIR = LAZYAUDIT_DIR/"TUI" 
+
 DATA_DIR = LAZYAUDIT_DIR/"data"
 GLOBAL_DIR = LAZYAUDIT_DIR/"data"/"globals"
 CONFIG_FILE = DATA_DIR/"config.json"
 PROJECTS_DIR = DATA_DIR / "projects"
-
+LOGS_DIR = DATA_DIR/"logs"
+LOGS_FILE = LOGS_DIR/"lazyaudit.jsonl"
 # ========== GLOBAL PATHS ==========
 GLOBAL_COMMANDS_FILE = GLOBAL_DIR/"global_commands.json"
 GLOBAL_VARS_FILE = GLOBAL_DIR/"global_vars.json"

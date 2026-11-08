@@ -13,6 +13,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 from utils.actions import Checklist
 from utils.common import _save
+from utils.logger import log, Event
 
 from TUI.modals.checklists.modify_group import ModifyGroupModal
 from TUI.modals.checklists.modify_task import ModifyTaskModal
@@ -153,12 +154,12 @@ class ChecklistsTab(TabPane):
         target_type, _ = self.get_selected_target()
         if target_type == "task":
             if self.current_task:
-                Checklist.toggle(self.current_task) # Checklist()
+                old_task = Checklist(**vars(self.current_task))
+                Checklist.toggle(self.current_task)
+                log(Event.CHECKLIST_MODIFIED, {"old": old_task, "new": self.current_task})
                 if self.current_group:
-                    self.load_tasks(self.current_group) #  Nombre del grupo
+                    self.load_tasks(self.current_group)
                 self.load_groups()
-        else:
-            pass
 
     def action_add_checklist(self) -> None:
         target_type, _ = self.get_selected_target()
@@ -172,6 +173,7 @@ class ChecklistsTab(TabPane):
         if data is not None:
             new_item = Checklist(**data)
             Checklist.add(new_item)
+            log(Event.CHECKLIST_CREATED, new_item)
             self.load_groups(new_item.group)
             self.load_tasks(new_item.group)
             self.app.notify("Checklist agregado con éxito!")
@@ -186,21 +188,26 @@ class ChecklistsTab(TabPane):
             self.app.push_screen(ModifyTaskModal(self.current_task), self.modify_task)
 
     def rename_group(self, new_group_name):
-        if new_group_name != None:
+        if new_group_name is not None:
+            old_name = self.current_group
+            new_name = new_group_name["group"]
             items = Checklist.read_all()
             for item in items:
-                if item.group == self.current_group:
-                    item.group = new_group_name["group"]
+                if item.group == old_name:
+                    item.group = new_name
             _save(Checklist.file_path, items)
+            log(Event.CHECKLIST_MODIFIED, {"old_group": old_name, "new_group": new_name})
 
-            self.current_group = new_group_name["group"]
-            self.load_groups(new_group_name["group"])
+            self.current_group = new_name
+            self.load_groups(new_name)
             self.load_tasks(self.current_group)
 
     def modify_task(self, data):
-        if data != None:
+        if data is not None:
+            old_item = self.current_task
             new_item = Checklist(**data)
-            Checklist.modify(self.current_task, new_item)
+            Checklist.modify(old_item, new_item)
+            log(Event.CHECKLIST_MODIFIED, {"old": old_item, "new": new_item})
 
             if self.current_group:
                 self.load_tasks(self.current_group)
@@ -216,19 +223,24 @@ class ChecklistsTab(TabPane):
             self.app.push_screen(RemoveTaskModal(self.current_task), self.remove_task)
  
     def remove_group(self, group_name):
-        items = [item for item in Checklist.read_all() if item.group != group_name]
+        all_items = Checklist.read_all()
+        count = sum(1 for i in all_items if i.group == group_name)
+        items = [item for item in all_items if item.group != group_name]
         _save(Checklist.file_path, items)
+        log(Event.CHECKLIST_REMOVED, {"group": group_name, "count": count})
         self.current_group = None
         self.load_groups()
 
     def remove_task(self, confirmed):
-        if confirmed == True and self.current_task:
-            Checklist.remove(self.current_task)
+        if confirmed and self.current_task:
+            task_to_remove = self.current_task
+            Checklist.remove(task_to_remove)
+            log(Event.CHECKLIST_REMOVED, task_to_remove)
             if self.current_group:
                 self.load_tasks(self.current_group)
             self.load_groups()
             self.app.notify("Tarea eliminada")
-
+            
     def on_show(self) -> None:
         self.load_groups()
 

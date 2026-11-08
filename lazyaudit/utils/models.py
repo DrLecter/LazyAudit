@@ -31,6 +31,12 @@ class VariableData:
     description : str = ""
     scope : ScopeData = ScopeData.PRIVATE
 
+    def __post_init__(self):
+        if len(self.key) > 64:
+            raise ValueError("La clave de la variable no puede superar 64 caracteres.")
+        if len(self.value) > 64:
+            raise ValueError("El valor de la variable no puede superar 64 caracteres.")
+
 @dataclass
 class ProjectData:
     name : str

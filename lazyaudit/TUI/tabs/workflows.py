@@ -13,6 +13,8 @@ sys.path.append(str(ROOT_DIR / "utils"))
 sys.path.append(str(ROOT_DIR / "TUI"))
 
 from utils.actions import Workflow
+from utils.logger import log, Event
+
 from TUI.modals.workflows.add import AddWorkflowModal
 from TUI.modals.workflows.remove import RemoveWorkflowModal
 
@@ -105,22 +107,36 @@ class WorkflowsTab(TabPane):
 
     @work(thread=True)
     def _run_workflow_worker(self, wf: Workflow) -> None:
+        import time
         self.running_process = True
         console = self.query_one("#wf_console", RichLog)
         console.write(f"\n[bold cyan]═══ Iniciando: {wf.name} ({wf.scope.upper()}) ═══[/bold cyan]")
+
+        start_time = time.time()
+        output_lines = []
+        final_code = 0
 
         try:
             for code, line in Workflow.run(wf):
                 if line is not None:
                     console.write(line.rstrip())
+                    output_lines.append(line)
                 if code is not None:
-                    if code == 0:
-                        color = "bold green"
-                    else:
-                        color = "bold red"
-
+                    final_code = code
+                    color = "bold green" if code == 0 else "bold red"
                     console.write(f"[{color}]═══ Proceso finalizado. Codigo: {code} ═══[/{color}]\n")
                     self.app.notify(f"{wf.name} finalizó (código {code})")
+
+            # Se loguea UNA SOLA VEZ al terminar el proceso
+            duration_ms = int((time.time() - start_time) * 1000)
+            log(Event.WORKFLOW_EXECUTED, {
+                "workflow": wf.name,
+                "path": str(wf.path),
+                "exit_code": final_code,
+                "duration_ms": duration_ms,
+                "output": "".join(output_lines).strip()
+            })
+
         except Exception as e:
             console.write(f"[bold red]Error al ejecutar: {e}[/bold red]\n")
             self.app.notify(f"Error al ejecutar: {e}", severity="error")
@@ -131,11 +147,18 @@ class WorkflowsTab(TabPane):
         self.app.push_screen(AddWorkflowModal(), self.add_workflow)
 
     def add_workflow(self, data) -> None:
-        if data is not None:
-            Workflow.add(data["path"], data["scope"])
-            added_name = Path(data["path"]).name
-            self.load_workflows(added_name)
-            self.app.notify("Workflow añadido con éxito")
+            if data is not None:
+                script_path = data["path"]
+                scope = data["scope"]
+                Workflow.add(script_path, scope)
+                log(Event.WORKFLOW_ADDED, {
+                    "name": Path(script_path).name,
+                    "path": script_path,
+                    "scope": scope
+                })
+                added_name = Path(script_path).name
+                self.load_workflows(added_name)
+                self.app.notify("Workflow añadido con éxito!")
 
     def action_remove_workflow(self) -> None:
         if not self.current_workflow:
@@ -146,6 +169,7 @@ class WorkflowsTab(TabPane):
     def remove_workflow(self, confirmed) -> None:
         if confirmed and self.current_workflow:
             Workflow.remove(self.current_workflow)
+            log(Event.WORKFLOW_REMOVED, self.current_workflow)
             self.current_workflow = None
             self.load_workflows()
             self.app.notify("Workflow eliminado")

@@ -4,6 +4,8 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent / "utils"))
 from actions import Project, Command, Variable, Host, Finding, Scope, Checklist, Workflow
 
+from logger import log, Event
+
 # 1. Sin parámetros (ej. -lp): lleva action="store_true".
 # 2. Con 1 parámetro (ej. -sp audit_test1): no lleva action (es el comportamiento por defecto, te guarda el string que escribas en args.set_project).
 # 3. Con 2 o más parámetros (ej. -sv RHOST 10.10.10.5): lleva nargs=2 (y te guarda una lista de 2 elementos ["RHOST", "10.10.10.5"] en args.set_var).
@@ -132,10 +134,14 @@ if args.add_command:
         command.scope = Scope.GLOBAL
     Command.add(command)
 
+    log(Event.COMMAND_CREATED, command)
+
 # --remove-command
 elif args.remove_command:
     command_to_remove = Command.read_all()[args.remove_command[0]]
     Command.remove(command_to_remove)
+
+    log(Event.COMMAND_REMOVED, command_to_remove)
 
 # --modify-command
 elif args.modify_command:
@@ -154,6 +160,8 @@ elif args.modify_command:
         new_cmd.scope = args.scope
 
     Command.modify(old_cmd, new_cmd)
+
+    log(Event.COMMAND_MODIFIED, {"old": old_cmd, "new":new_cmd})
 
 # --list-commands
 elif args.list_commands:
@@ -175,6 +183,7 @@ elif args.list_commands:
 # ========== Proyectos ==========
 # --list-projects
 elif args.list_projects:
+    from PATHS import ACTIVE_PROJECT
     all_projects = Project.show()
     index=0
     if args.search:
@@ -206,7 +215,10 @@ elif args.list_projects:
         else:
             for i in projects_list:
                 index = all_projects.index(i)
-                print(f"[{index}] - {i.name}")
+                if i.name == ACTIVE_PROJECT:
+                    print(f"[{index}] - {i.name} (ACTIVE)")
+                else:
+                    print(f"[{index}] - {i.name}")
                 
 
 # --add-project
@@ -214,14 +226,27 @@ elif args.add_project:
     project = Project(*args.add_project)
     Project.add(project)
 
+    log(Event.PROJECT_CREATED, project)
+
 # --remove-project
 elif args.remove_project:
+    projects = Project.show()
+    for i in projects:
+        if i.name == args.remove_project[0]:
+            removed_project = i
+            break
+
     project = args.remove_project[0]
     Project.remove(project)
 
+    log(Event.PROJECT_REMOVED, removed_project)
+
 # --modify-project
 elif args.modify_project:
-    project = Project.read_all()[0]
+    import copy
+    projects = Project.read_all()
+    project = projects[0]
+    old_project = copy.copy(project)
     if args.name:
         project.name = args.name
     if args.description:
@@ -230,10 +255,14 @@ elif args.modify_project:
         project.status = args.status
     Project.modify(project)
 
+    log(Event.PROJECT_MODIFIED, {"old":old_project, "new":project})
+
 # --change-project
 elif args.change_project:
     project = args.change_project[0]
     Project.change(project)
+
+    log(Event.PROJECT_CHANGED, project)
 
 # ========== Findings ==========
 # --list-findings
@@ -265,16 +294,22 @@ elif args.modify_finding:
 
     Finding.modify(old_fng, new_fng)
 
+    log(Event.FINDING_MODIFIED, {"old":old_fng,"new":new_fng})
+
 # --remove-finding
 elif args.remove_finding:
     fng = Finding.read_all()[args.remove_finding[0]]
     Finding.remove(fng)
+    log(Event.FINDING_REMOVED, fng)
+
 
 # --add-finding
 elif args.add_finding: 
     fng = Finding(*args.add_finding)
     fng.vulns = fng.vulns.split(",")
     Finding.add(fng)
+
+    log(Event.FINDING_CREATED, fng)
 
 # ========== Variables ==========
 # --list-variable
@@ -304,11 +339,15 @@ elif args.modify_variable:
         new_var.scope = args.scope
 
     Variable.modify(old_var, new_var)
+    log(Event.VARIABLE_MODIFIED, {"old":old_var,"new":new_var})
+
 
 # --remove-variable
 elif args.remove_variable:
     var = Variable.read_all()[args.remove_variable[0]]
     Variable.remove(var)
+
+    log(Event.VARIABLE_REMOVED, var)
 
 # --add-variable
 elif args.add_variable: 
@@ -316,6 +355,8 @@ elif args.add_variable:
     if args.is_global: 
         var.scope = Scope.GLOBAL
     Variable.add(var)
+
+    log(Event.VARIABLE_CREATED, var)
 
 # ========== Hosts ==========
 # --list-hosts
@@ -346,10 +387,14 @@ elif args.modify_host:
 
     Host.modify(old_host, new_host)
 
+    log(Event.HOST_MODIFIED, {"old":old_host,"new":new_host})
+
 # --remove-host
 elif args.remove_host:
     host = Host.read_all()[args.remove_host[0]]
     Host.remove(host)
+
+    log(Event.HOST_REMOVED, host)
 
 # --add-host
 elif args.add_host: 
@@ -357,6 +402,8 @@ elif args.add_host:
     host.ports = host.ports.split(",")
     host.services = host.services.split(",")
     Host.add(host)
+
+    log(Event.HOST_CREATED, host)
 
 # ========== Checklist ==========
 # --list-checklists
@@ -404,24 +451,30 @@ elif args.modify_checklist:
                 new_checklist = Checklist.toggle(new_checklist)
 
             Checklist.modify(old_checklist, new_checklist)
+            log(Event.CHECKLIST_MODIFIED, {"old": old_checklist, "new": new_checklist})
         else:
             if args.scope:
                 Checklist.change_scope(group_name, args.scope)
+                log(Event.CHECKLIST_MODIFIED, {"group": group_name, "new_scope": args.scope})
             if args.group:
                 for i in filtered_list:
                     new_i = copy.copy(i)
                     new_i.group = args.group.lower()
                     Checklist.modify(i, new_i)
+                log(Event.CHECKLIST_MODIFIED, {"old_group": group_name, "new_group": args.group.lower()})
 
 # --remove-checklist
 elif args.remove_checklist:
     filtered_list = [i for i in Checklist.read_all() if i.group.lower() == args.remove_checklist[0].lower()]
     if args.item:
+        item_to_remove = filtered_list[args.item - 1]
         Checklist.remove(filtered_list[args.item-1])
-        pass
+        log(Event.CHECKLIST_REMOVED, item_to_remove)
     else: 
-        for i in filtered_list:
-            Checklist.remove(i)
+        for checklist in filtered_list:
+            Checklist.remove(checklist)
+            log(Event.CHECKLIST_REMOVED, checklist)
+
 
 # --add-checklist
 elif args.add_checklist: 
@@ -430,6 +483,8 @@ elif args.add_checklist:
     if args.is_global: 
         checklist.scope = Scope.GLOBAL
     Checklist.add(checklist)
+
+    log(Event.CHECKLIST_CREATED, checklist)
 
 # ========== Workflows ==========
 # --list-workflow
@@ -447,23 +502,52 @@ elif args.list_workflows:
         
 # --run
 elif args.run:
+    import time
     wf_list = Workflow.read_all()
     wf = wf_list[args.run[0]]
+
+    start_time = time.time()
+    output = []
+    exit_code = 0
+
     for code, line in Workflow.run(wf):
         if line is not None:
             print(line, end="", flush=True)
+            output.append(line)
         if code is not None:
+            exit_code = code
             print(f"ejecutado (código {code})")
+
+    duration = int((time.time() - start_time) * 1000)
+
+    log(Event.WORKFLOW_EXECUTED, {
+        "workflow": wf.name,
+        "path": str(wf.path),
+        "exit_code": exit_code,
+        "duration_ms": duration,
+        "output": "".join(output).strip()
+    })
 
 # --remove-workflow
 elif args.remove_workflow:
     wf_list = Workflow.read_all()
-    Workflow.remove(wf_list[args.remove_workflow[0]])
+    wf = wf_list[args.remove_workflow[0]]
+    Workflow.remove(wf)
+
+    log(Event.WORKFLOW_REMOVED, wf)
 
 # --add-workflow
 elif args.add_workflow:
     # Al llamar se pasa PATH y --global si es global
-    if args.is_global:                 
-        Workflow.add(str(args.add_workflow[0]), Scope.GLOBAL)
-    else:
-        Workflow.add(str(args.add_workflow[0]), Scope.PRIVATE)
+    if args.is_global: 
+        scope = Scope.GLOBAL
+    else: 
+        scope = Scope.PRIVATE
+    script_path = str(args.add_workflow[0])
+    Workflow.add(script_path, scope)
+
+    log(Event.WORKFLOW_ADDED, {
+            "name": Path(script_path).name,
+            "path": script_path,
+            "scope": scope
+            })

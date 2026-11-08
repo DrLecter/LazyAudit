@@ -15,6 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
+from utils.logger import log, Event
 
 from TUI.modals.projects.modify import ModifyProjectModal
 from TUI.modals.projects.add import AddProjectModal
@@ -77,6 +78,7 @@ class ProjectsTab(TabPane):
             project_name = str(event.row_key.value)
 
             Project.change(project_name)
+            log(Event.PROJECT_CHANGED, project_name)
 
             self.update_project_info(project_name)
                 
@@ -87,53 +89,69 @@ class ProjectsTab(TabPane):
             total = len(model.read_all())
 
         return total
-
-    def action_modify_project(self) -> None:
-        proyectos = Project.show()
-        project = next((proj for proj in proyectos if proj.name == PATHS.ACTIVE_PROJECT), None)
-
-        if project:
-            self.app.push_screen(ModifyProjectModal(project), self.modify_project)
-
+    
     def action_add_project(self) -> None:
         self.app.push_screen(AddProjectModal(), self.add_project)
 
-    def action_remove_project(self) -> None:
-        proyectos = Project.show()
-        project = next((proj for proj in proyectos if proj.name == PATHS.ACTIVE_PROJECT), None)
-
-        self.app.push_screen(RemoveProjectModal(project), self.remove_project)
-
-    def modify_project(self, data) -> None:
-        if data is not None:
-            Project.modify(Project(**data))
-            self.load_projects_table()
-            self.update_project_info(data["name"])
-            self.app.notify("¡Proyecto actualizado con éxito!")
-
     def add_project(self, data) -> None:
         if data is not None:
-            Project.add(Project(name=data["name"], description=data["description"], status=data["status"]))
+            project = Project(name=data["name"], description=data["description"], status=data["status"])
+            Project.add(project)
+            log(Event.PROJECT_CREATED, project)
             Project.change(data["name"])
+            log(Event.PROJECT_CHANGED, data["name"])
             self.load_projects_table()
             self.update_project_info(data["name"])
             self.app.notify("¡Proyecto creado con éxito!")
 
-    def remove_project(self, project_name) -> None:
-        if project_name is not None:
-            project_name = project_name["name"]
+    def action_modify_project(self) -> None:
+        active_project = Project.read_all()[0]
+        if active_project:
+            self.app.push_screen(ModifyProjectModal(active_project), self.modify_project)
 
-            available_projects = [p.name for p in Project.show() if p.name != project_name]
+    def modify_project(self, data) -> None:
+        if data is not None:
+            old_project = next((proj for proj in Project.show() if proj.name == PATHS.ACTIVE_PROJECT), None)
+            new_project = Project(**data)
+            Project.modify(new_project)
+            log(Event.PROJECT_MODIFIED, {"old": old_project, "new": new_project})
+            self.load_projects_table()
+            self.update_project_info(data["name"])
+            self.app.notify("¡Proyecto actualizado con éxito!")
 
-            if available_projects:
-                Project.change(available_projects[0])
-                Project.remove(project_name)     
-                self.load_projects_table()
-                self.update_project_info(available_projects[0])
-                self.app.notify("¡Proyecto eliminado con éxito!")
-            else:
+    def action_remove_project(self) -> None:
+        table = self.query_one("#projects_table", DataTable)
+        if table.cursor_row is not None and table.row_count > 0:
+            target_name = str(table.coordinate_to_cell_key(table.cursor_coordinate).row_key.value)
+            project_to_remove = next((p for p in Project.show() if p.name == target_name), None)
+            if project_to_remove:
+                self.app.push_screen(RemoveProjectModal(project_to_remove), self.remove_project)
+        else:
+            self.app.notify("No hay proyecto seleccionado en la tabla", severity="warning")
+
+    def remove_project(self, data) -> None:
+        if data is not None:
+            target_name = data["name"]
+            all_projects = Project.show()
+            active_name = Project.read_all()[0].name
+
+            if len(all_projects) <= 1:
                 self.app.notify("No podés eliminar el único proyecto existente", severity="warning")
+                return
 
+            # Si borramos justo el que está activo, pasamos a otro primero
+            if target_name == active_name:
+                remaining = [p.name for p in all_projects if p.name != target_name]
+                new_active = remaining[0]
+                Project.change(new_active)
+                log(Event.PROJECT_CHANGED, new_active)
+                self.update_project_info(new_active)
+
+            Project.remove(target_name)
+            log(Event.PROJECT_REMOVED, target_name)
+            self.load_projects_table()
+            self.app.notify(f"Proyecto {target_name} eliminado con éxito!")
+            
     def update_project_info(self, project_name : str) -> None:
         self.app.sub_title = project_name
         proyectos = Project.show()

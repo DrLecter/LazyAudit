@@ -15,6 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
+from utils.logger import log, Event
 
 from TUI.modals.hosts.modify import ModifyHostModal
 from TUI.modals.hosts.add import AddHostModal
@@ -86,6 +87,7 @@ class HostsTab(TabPane):
             data["services"] = [s.strip() for s in data["services"].split(",") if s.strip()] if data["services"] else []
             host = Host(**data)
             Host.add(host)
+            log(Event.HOST_CREATED, host)
             self.load_hosts_table()
             self.update_host_info(host)
             self.app.notify("Host creado con éxito!")
@@ -104,6 +106,7 @@ class HostsTab(TabPane):
             new_host.ports = clean_ports
             new_host.services = clean_services
             Host.modify(self.current_host, new_host)
+            log(Event.HOST_MODIFIED, {"old":self.current_host,"new":new_host})
             self.load_hosts_table()
             self.update_host_info(new_host)
             self.app.notify("¡Host actualizado con éxito!")
@@ -114,6 +117,7 @@ class HostsTab(TabPane):
     def remove_host(self, host) -> None:
         if host != None:
             Host.remove(host)     
+            log(Event.HOST_REMOVED, host)
             hosts = Host.read_all()
             if hosts:
                 self.update_host_info(hosts[0])

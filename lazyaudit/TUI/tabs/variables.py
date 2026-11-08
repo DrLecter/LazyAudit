@@ -15,6 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
+from utils.logger import log, Event
 
 from TUI.modals.variables.modify import ModifyVariableModal
 from TUI.modals.variables.add import AddVariableModal
@@ -92,6 +93,7 @@ class VariablesTab(TabPane):
         if data is not None:
             variable = Variable(**data)
             Variable.add(variable)
+            log(Event.VARIABLE_CREATED, variable)
             self.load_vars_table()
             self.update_var_info(variable)
             self.app.notify("Variable creada con éxito!")
@@ -106,6 +108,7 @@ class VariablesTab(TabPane):
         if data is not None:
             new_var = Variable(**data)
             Variable.modify(self.current_var, new_var)
+            log(Event.VARIABLE_MODIFIED, {"old":self.current_var, "new":new_var})
             self.load_vars_table()
             self.update_var_info(new_var)
             self.app.notify("¡Variable creada con éxito!")
@@ -116,6 +119,7 @@ class VariablesTab(TabPane):
     def remove_var(self, variable) -> None:
         if variable != None:
             Variable.remove(variable)     
+            log(Event.VARIABLE_REMOVED, variable)
             variables = Variable.read_all()
             if variables:
                 self.update_var_info(variables[0])

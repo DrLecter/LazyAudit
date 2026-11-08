@@ -15,6 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
+from utils.logger import log, Event
 
 from TUI.modals.commands.modify import ModifyCommandModal
 from TUI.modals.commands.add import AddCommandModal
@@ -89,9 +90,9 @@ class CommandsTab(TabPane):
 
     def add_command(self, data) -> None:
         if data is not None:
-            clean_tags = [t.strip() for t in data["tags"].split(",") if t.strip()] if data["tags"] else []
             command = Command(**data)
             Command.add(command)
+            log(Event.COMMAND_CREATED, command)
             self.load_commands_table()
             self.update_command_info(command)
             self.app.notify("Comando creado con éxito!")
@@ -104,19 +105,23 @@ class CommandsTab(TabPane):
 
     def modify_command(self, data) -> None:
         if data is not None:
+            old_command = self.current_command
             clean_tags = data["tags"].split(",")
             new_command = Command(title=data["title"], description=data["description"], command=data["command"], scope=data["scope"], tags=clean_tags)
             Command.modify(self.current_command, new_command)
+            log(Event.COMMAND_MODIFIED, {"old": old_command,"new":new_command})
             self.load_commands_table()
             self.update_command_info(new_command)
             self.app.notify("¡Proyecto actualizado con éxito!")
+
 
     def action_remove_command(self) -> None:
         self.app.push_screen(RemoveCommandModal(self.current_command), self.remove_command)
 
     def remove_command(self, command) -> None:
         if command != None:
-            Command.remove(command)     
+            Command.remove(command)    
+            log(Event.COMMAND_REMOVED, command) 
             commands = Command.read_all()
             if commands:
                 self.update_command_info(commands[0])

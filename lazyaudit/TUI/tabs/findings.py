@@ -15,6 +15,7 @@ sys.path.append(str(ROOT_DIR / "TUI"))
 
 import utils.PATHS as PATHS
 from utils.actions import Command, Scope, Project, Variable, Finding, Host, Checklist, Workflow
+from utils.logger import log, Event
 
 from TUI.modals.findings.modify import ModifyFindingModal
 from TUI.modals.findings.add import AddFindingModal
@@ -94,6 +95,7 @@ class FindingsTab(TabPane):
             clean_vulns = [t.strip() for t in data["vulns"].split(",") if t.strip()] if data["vulns"] else []
             finding = Finding(host=data["host"], description=data["description"], vulns=clean_vulns, severity=data["severity"])
             Finding.add(finding)
+            log(Event.FINDING_CREATED, finding)
             self.load_findings_table()
             self.update_finding_info(finding)
             self.app.notify("Hallazgo creado con éxito!")
@@ -109,6 +111,7 @@ class FindingsTab(TabPane):
             clean_vulns = [v.strip() for v in data["vulns"].split(",") if v.strip()] if data["vulns"] else []
             new_finding = Finding(host=data["host"], description=data["description"], vulns=clean_vulns, severity=data["severity"])
             Finding.modify(self.current_finding, new_finding)
+            log(Event.FINDING_MODIFIED, {"old":self.current_finding, "new":new_finding})
             self.load_findings_table()
             self.update_finding_info(new_finding)
             self.app.notify("¡Hallazgo actualizado con éxito!")
@@ -119,6 +122,7 @@ class FindingsTab(TabPane):
     def remove_finding(self, finding) -> None:
         if finding != None:
             Finding.remove(finding)     
+            log(Event.FINDING_REMOVED, finding)
             findings = Finding.read_all()
             if findings:
                 self.update_finding_info(findings[0])

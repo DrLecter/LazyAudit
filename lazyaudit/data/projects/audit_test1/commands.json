@@ -31,7 +31,7 @@
         "scope": "private"
     },
     {
-        "title": "lalalal",
+        "title": "Comando de prueba",
         "command": "lalala {RHOST} lalalal",
         "description": "lalalal",
         "tags": [
@@ -44,6 +44,24 @@
         "command": "ls -la",
         "description": "desc",
         "tags": "a, b",
+        "scope": "private"
+    },
+    {
+        "title": "Titulo del comando",
+        "command": "Comando en si",
+        "description": "descripcion",
+        "tags": [
+            "tags",
+            " tags",
+            " tags"
+        ],
+        "scope": "private"
+    },
+    {
+        "title": "COMANDODEPRUEBA",
+        "command": "asdasdasdasdasd",
+        "description": "asdasd",
+        "tags": "asdasd asdasd",
         "scope": "private"
     }
 ]

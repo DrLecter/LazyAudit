@@ -51,14 +51,15 @@ class AddCommandModal(ModalScreen):
             tags = self.query_one("#inp_tags", Input).value.strip()
             scope = self.query_one("#sel_scope", Select).value.strip()
 
-            # Devuelve los valores
-            self.dismiss({
+            command = {
                 "title": title,
                 "description": desc,
                 "command": command,
                 "tags": tags,
                 "scope": scope
-            })
+            }
+
+            self.dismiss(command)
 
         elif event.button.id == "cancel_btn":
             self.dismiss(None)

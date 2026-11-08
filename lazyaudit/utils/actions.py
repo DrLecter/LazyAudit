@@ -3,10 +3,14 @@ import PATHS
 import common
 import json
 from pathlib import Path
+import re
 
 # Los modelos heredan common.CommonActions que es donde está add, modify, delete y remove
 # permite que se los llame directamente con la acción y se evita pasar el Path. 
 # Command.reead_all(), Variable.add(), etc.
+def _is_safe(name :str) -> bool:
+    return bool(re.match(r"^[a-zA-Z0-9_\-]+$", name))
+
 
 class Scope(ScopeData):
     pass
@@ -47,6 +51,8 @@ class Project(ProjectData, common.CommonActions):
     # Recibe un nombre de proyecto y borra el directorio de ese proyecto
     @classmethod
     def remove(cls, project_name : str) -> None:
+        if not _is_safe(project_name):
+            return
         project_dir = PATHS.PROJECTS_DIR/project_name
 
         if project_dir.exists(): 
@@ -74,6 +80,8 @@ class Project(ProjectData, common.CommonActions):
     # Recibe un Project y crea el directorio, los archivos y llena el project.json 
     @classmethod
     def add(cls, new_project : "Project") -> None:
+        if not _is_safe(new_project.name):
+            raise ValueError("Nombre de proyecto inválido (solo se permite letras, números y guiones.)")
         base_files = ["commands.json", "findings.json", "hosts.json", "variables.json", "checklists.json"]
         project_dir = Path(PATHS.PROJECTS_DIR/new_project.name)
         project_dir.mkdir(parents=True, exist_ok=True)
@@ -97,16 +105,20 @@ class Project(ProjectData, common.CommonActions):
     # Recibe un nombre de proyecto y setea la variable ACTIVE_PROJECT
     @classmethod
     def change(cls, new_project : str) -> None:
+        if not _is_safe(new_project):
+            return
         with open(PATHS.CONFIG_FILE, "r") as f:
             data = json.load(f)
             active_project = data["project"]
 
         if active_project != new_project:
-            # Verifica que el pryecto al que se quiere cambiar realmente exista
+            # Verifica que el pryecto al que se quiere cambiar exista
             if (PATHS.PROJECTS_DIR / new_project).exists():
                 with open(PATHS.CONFIG_FILE, "w") as f:
-                    json.dump( {"project": new_project}, f, indent=4, ensure_ascii=False)
+                    json.dump({"project": new_project}, f, indent=4, ensure_ascii=False)
+
                 PATHS.reload_paths()
+
                 Command.file_path = PATHS.COMMANDS_FILE
                 Variable.file_path = PATHS.VARIABLES_FILE
                 Project.file_path = PATHS.PROJECT_FILE
@@ -173,15 +185,14 @@ class Workflow(WorkflowData, common.CommonActions):
         Path(workflow.path).unlink()
 
     @classmethod
-    def run(cls, workflow):
-        import subprocess, sys
+    def run(cls, workflow, timeout: int = 10): #600 = 10 minutos
+        import subprocess, sys, time
 
         if workflow.name.endswith(".sh"):
             cmd = ["bash", str(workflow.path)]
         elif workflow.name.endswith(".py"):
             cmd = [sys.executable, "-u", str(workflow.path)]
         else:
-            yield 1, f"Tipo de archivo no soportado: {workflow.name}"
             return
 
         process = subprocess.Popen(
@@ -192,8 +203,21 @@ class Workflow(WorkflowData, common.CommonActions):
             bufsize=1,
         )
 
-        for line in process.stdout:
-            yield None, line
+        start_time = time.time()
+        while True:
+            # Revisa si se pasó del tiempo
+            if time.time() - start_time > timeout:
+                process.kill()
+                yield -1, f"\n[!] Timeout de {timeout}s excedido. Proceso terminado forzosamente.\n"
+                return
 
-        process.wait()
+            line = process.stdout.readline()
+            if line:
+                yield None, line
+            elif process.poll() is not None:
+                # El proceso terminó normalmente
+                break
+            else:
+                time.sleep(0.1)
+
         yield process.returncode, None
