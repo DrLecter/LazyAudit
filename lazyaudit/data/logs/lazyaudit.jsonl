@@ -98,3 +98,12 @@
 {"ts": "2026-11-08|19:40:09", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "Proyecto de prueba"}}
 {"ts": "2026-11-08|19:40:11", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "PROYECTO DE PRUEBA 2"}}
 {"ts": "2026-11-08|19:40:24", "user": "luciano", "project": "Proyecto de prueba", "event": "WORKFLOW_EXECUTED", "data": {"workflow": "recon.sh", "path": "/home/luciano/github/LazyAudit/lazyaudit/data/globals/workflows/recon.sh", "exit_code": 0, "duration_ms": 23, "output": "[*] [GLOBAL] Ejecutando workflow estándar de reconocimiento inicial..."}}
+{"ts": "2026-11-08|19:42:43", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:42:49", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "PROJECT_CHANGED", "data": {"raw": "PROYECTO DE PRUEBA 2"}}
+{"ts": "2026-11-08|19:42:50", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "PROJECT_CHANGED", "data": {"raw": "Proyecto de prueba"}}
+{"ts": "2026-11-08|19:42:51", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "PROJECT_CHANGED", "data": {"raw": "PROYECTO DE PRUEBA 2"}}
+{"ts": "2026-11-08|19:44:11", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:45:29", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:46:25", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:46:31", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:46:49", "user": "luciano", "project": "PROYECTO DE PRUEBA 2", "event": "LOGGED_IN", "data": {"mode": "tui"}}
