@@ -224,5 +224,4 @@ docs_private/
 # Custom files
 lazyaudit/data/projects/*
 !lazyaudit/data/projects/.gitkeep
-lazyaudit/data/logs/*
-!lazyaudit/data/logs/.gitkeep
+old_data/

@@ -1,0 +1,4 @@
+{"ts": "2026-11-08|13:58:43", "user": "luciano", "project": "audit_test1", "event": "USED_CLI", "data": {"mode": "cli", "command": "-lp"}}
+{"ts": "2026-11-08|13:58:49", "user": "luciano", "project": "audit_test1", "event": "USED_CLI", "data": {"mode": "cli", "command": "-ap audit_demo Proyecto inicial de prueba active"}}
+{"ts": "2026-11-08|13:58:49", "user": "luciano", "project": "audit_test1", "event": "PROJECT_CREATED", "data": {"name": "audit_demo", "description": "Proyecto inicial de prueba", "status": "active", "created": "2026-11-08"}}
+{"ts": "2026-11-08|13:58:55", "user": "luciano", "project": "audit_test1", "event": "USED_CLI", "data": {"mode": "cli", "command": "-lp"}}

@@ -70,13 +70,15 @@ def log(event, data, user: str = None, project: str = None) -> None:
         "data": _normalize_data(data)
     }
 
+    LOGS_FILE.parent.mkdir(parents=True, exist_ok=True)
+
     file_exists = LOGS_FILE.exists()
 
     with open(LOGS_FILE, "a", encoding="utf-8") as f:
         f.write(json.dumps(static_data, ensure_ascii=False, default=str) + "\n")
 
     if not file_exists and LOGS_FILE.exists():
-            try:
-                os.chmod(LOGS_FILE, 0o600)
-            except OSError:
-                pass
+        try:
+            os.chmod(LOGS_FILE, 0o600)
+        except OSError:
+            pass
