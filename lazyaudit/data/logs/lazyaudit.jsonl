@@ -88,3 +88,13 @@
 {"ts": "2026-11-08|15:31:07", "user": "luciano", "project": "Proyecto de prueba", "event": "HOST_CREATED", "data": {"ip": "10.10.20.25", "hostname": "backup.corp.local", "ports": ["21", "80"], "services": ["ftp vsftpd 3.0.3", "http Apache httpd 2.4.52"]}}
 {"ts": "2026-11-08|15:31:08", "user": "luciano", "project": "Proyecto de prueba", "event": "LOGGED_IN", "data": {"mode": "tui"}}
 {"ts": "2026-11-08|15:31:17", "user": "luciano", "project": "Proyecto de prueba", "event": "USED_CLI", "data": {"mode": "cli", "command": "-lh"}}
+{"ts": "2026-11-08|19:37:27", "user": "luciano", "project": "Proyecto de prueba", "event": "USED_CLI", "data": {"mode": "cli", "command": "-lh"}}
+{"ts": "2026-11-08|19:37:29", "user": "luciano", "project": "Proyecto de prueba", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:37:41", "user": "luciano", "project": "Proyecto de prueba", "event": "WORKFLOW_EXECUTED", "data": {"workflow": "recon.sh", "path": "/home/luciano/github/LazyAudit/lazyaudit/data/globals/workflows/recon.sh", "exit_code": 0, "duration_ms": 13, "output": "[*] [GLOBAL] Ejecutando workflow estándar de reconocimiento inicial..."}}
+{"ts": "2026-11-08|19:39:00", "user": "luciano", "project": "Proyecto de prueba", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:40:02", "user": "luciano", "project": "Proyecto de prueba", "event": "LOGGED_IN", "data": {"mode": "tui"}}
+{"ts": "2026-11-08|19:40:07", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "Proyecto de prueba"}}
+{"ts": "2026-11-08|19:40:09", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "PROYECTO DE PRUEBA 2"}}
+{"ts": "2026-11-08|19:40:09", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "Proyecto de prueba"}}
+{"ts": "2026-11-08|19:40:11", "user": "luciano", "project": "Proyecto de prueba", "event": "PROJECT_CHANGED", "data": {"raw": "PROYECTO DE PRUEBA 2"}}
+{"ts": "2026-11-08|19:40:24", "user": "luciano", "project": "Proyecto de prueba", "event": "WORKFLOW_EXECUTED", "data": {"workflow": "recon.sh", "path": "/home/luciano/github/LazyAudit/lazyaudit/data/globals/workflows/recon.sh", "exit_code": 0, "duration_ms": 23, "output": "[*] [GLOBAL] Ejecutando workflow estándar de reconocimiento inicial..."}}

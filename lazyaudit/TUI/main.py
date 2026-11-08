@@ -26,6 +26,7 @@ from tabs.workflows import WorkflowsTab
 # ====================
 
 class LazyAudit(App):
+     CSS_PATH = "styles.tcss"
      BINDINGS = [Binding("d", "toggle_dark", "Cambiar a modo oscuro/claro", key_display="D")]
 
      def compose(self) -> ComposeResult:

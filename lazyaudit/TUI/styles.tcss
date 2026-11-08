@@ -1,0 +1,190 @@
+/* ==========================================================================
+   LazyAudit — Minimalist Dark Theme
+   Limpio, sobrio y sin sobrecarga visual
+   ========================================================================== */
+
+Screen {
+    background: #111217;
+    color: #e1e2e7;
+}
+
+Header {
+    background: #181920;
+    color: #7aa2f7;
+    dock: top;
+    height: 1;
+}
+
+Footer {
+    background: #181920;
+    color: #565f89;
+    dock: bottom;
+}
+
+/* Tabs */
+TabbedContent {
+    background: #111217;
+}
+
+Tabs {
+    background: #181920;
+    height: 3;
+    border-bottom: solid #222430;
+}
+
+Tab {
+    color: #787c99;
+    padding: 0 2;
+}
+
+Tab.-active {
+    color: #ffffff;
+    background: #1e2029;
+    text-style: bold;
+}
+
+/* Dos Columnas Simples */
+TabPane > Horizontal {
+    height: 1fr;
+}
+
+TabPane > Horizontal > Vertical:first-child {
+    width: 40%;
+    border-right: solid #222430;
+    padding: 1;
+}
+
+TabPane > Horizontal > Vertical:last-child {
+    width: 60%;
+    padding: 1 2;
+}
+
+/* Tablas y Listas */
+DataTable {
+    background: transparent;
+    border: none;
+    height: 1fr;
+}
+
+DataTable > .datatable--cursor {
+    background: #283457;
+    color: #ffffff;
+}
+
+ListView {
+    background: transparent;
+    border: none;
+    height: 1fr;
+}
+
+ListItem {
+    padding: 0 1;
+    color: #e1e2e7;
+}
+
+ListItem.-selected {
+    background: #283457;
+    color: #ffffff;
+}
+
+/* Tarjetas métricas (Proyectos) */
+#count_hosts, #count_findings, #count_variables, #count_commands {
+    width: 1fr;
+    height: 3;
+    background: #181920;
+    border: round #2f334d;
+    content-align: center middle;
+    text-align: center;
+    color: #c0caf5;
+    margin: 0 1 1 0;
+}
+
+/* Grid de detalles */
+#grid_detalle {
+    grid-size: 2;
+    grid-columns: 16 1fr;
+    margin-top: 1;
+}
+
+.lbl_clave {
+    color: #7aa2f7;
+}
+
+/* Consola Workflows */
+#wf_console {
+    background: #0d0e12;
+    border: solid #222430;
+    height: 1fr;
+}
+
+/* Modales */
+ModalScreen {
+    align: center middle;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+ModalScreen > Vertical {
+    width: 58;
+    height: auto;
+    background: #181920;
+    border: round #3b4261;
+    padding: 1 2;
+}
+
+#model_title, #model_task, #model_finding, #model_host, #model_key, #model_var {
+    color: #7aa2f7;
+    text-align: center;
+    margin-bottom: 1;
+    text-style: bold;
+}
+
+Input {
+    background: #111217;
+    border: round #2f334d;
+    color: #e1e2e7;
+    margin-bottom: 1;
+}
+
+Input:focus {
+    border: round #7aa2f7;
+}
+
+Select {
+    background: #111217;
+    border: round #2f334d;
+    color: #e1e2e7;
+    margin-bottom: 1;
+}
+
+Select:focus {
+    border: round #7aa2f7;
+}
+
+#modal_btns {
+    align: right middle;
+    height: 3;
+    margin-top: 1;
+}
+
+Button {
+    min-width: 10;
+    border: none;
+    margin-left: 1;
+}
+
+Button.-primary, #save_btn {
+    background: #7aa2f7;
+    color: #111217;
+    text-style: bold;
+}
+
+Button.-error, #confirm_btn {
+    background: #f7768e;
+    color: #111217;
+    text-style: bold;
+}
+
+#cancel_btn {
+    background: #222430;
+    color: #c0caf5;
+}
