@@ -1,0 +1,11 @@
+.git
+.gitignore
+.vscode
+__pycache__
+*.pyc
+project_info
+docs
+lazyaudit/data/logs
+lazyaudit/data/projects/aksdhjhjkadshjkads
+lazyaudit/data/projects/asd
+lazyaudit/data/projects/PROYECTO_DE_PRUEBA

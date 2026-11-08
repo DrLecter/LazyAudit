@@ -1,8 +1,0 @@
-[
-    {
-        "group": "api",
-        "task": "Probar endpoints sin autenticación (BOLA / BFLA)",
-        "done": false,
-        "scope": "private"
-    }
-]

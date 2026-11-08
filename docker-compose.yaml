@@ -1,0 +1,37 @@
+    services:
+      lazyaudit:
+        build:
+          context: .
+          dockerfile: Dockerfile
+        image: lazyaudit:1.0.0
+        container_name: lazyaudit
+        user: "1000:1000"
+
+        # Terminal interactiva obligatoria para Textual
+        stdin_open: true
+        tty: true
+
+        # Hardening de seguridad para TFG
+        cap_drop:
+          - ALL
+        security_opt:
+          - no-new-privileges:true
+        mem_limit: 1g
+        cpus: 1.0
+
+        volumes:
+          # Volumen administrado protegido: la PC host NO puede editar ni manipular los datos/logs directamente
+          - lazyaudit_data:/app/lazyaudit/data
+          # Buzón de entrada de scripts externos en modo SOLO LECTURA
+          - ./inbox:/app/inbox:ro
+
+        networks:
+          - lazyaudit_net
+
+    volumes:
+      # Almacenamiento seguro gestionado por Podman/Docker
+      lazyaudit_data:
+
+    networks:
+      lazyaudit_net:
+        driver: bridge

@@ -22,6 +22,12 @@
 
 LazyAudit asume un modelo de **responsabilidad compartida**. La herramienta sanitiza los inputs para prevenir ataques de *path traversal* y gestiona el aislamiento de volúmenes en Docker (configurado en modo de solo lectura con excepciones estrictas). Sin embargo, el auditor es responsable de validar los comandos ejecutados en los *workflows* y de no almacenar secretos en texto plano (como contraseñas o hashes operativos) en las variables globales.
 
+***Carpeta Inbox (Buzón de Entrada de Workflows)***
+
+Colocá acá los scripts `.sh` o `.py` que quieras importar a LazyAudit.
+El contenedor los lee en modo solo lectura (`/app/inbox/script.py`) y la herramienta los copia de forma segura
+dentro del volumen protegido.
+
 ## 👨‍💻 Autor
 **Franco Luciano Merlo** (franlumer)
 *Licenciatura en Seguridad Informática - Universidad Siglo 21*
