@@ -57,15 +57,16 @@ class HostsTab(TabPane):
         hosts = Host.read_all()
         hosts.sort(key=lambda x: x.ip)
 
-        for h in hosts:
-            table.add_row(h.hostname[:15].strip(), h.ip, key=h.ip)
+        self._hosts_cache = hosts
+        for idx, h in enumerate(hosts):
+            table.add_row(h.hostname[:15].strip(), h.ip, key=str(idx))
 
-    def on_data_table_row_highlighted(self, event: DataTable.RowSelected) -> None:
+    def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
         if event.data_table.id == "hosts_table":
-            host_ip = str(event.row_key.value)
-            self.current_host = next((h for h in Host.read_all() if h.ip == host_ip), None)
-
-            self.update_host_info(self.current_host) # Command()
+            idx = int(event.row_key.value)
+            if hasattr(self, "_hosts_cache") and idx < len(self._hosts_cache):
+                self.current_host = self._hosts_cache[idx]
+                self.update_host_info(self.current_host)
 
     def update_host_info(self, host : "Host") -> None:
         if host:
