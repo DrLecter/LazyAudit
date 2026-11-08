@@ -33,22 +33,24 @@ class FindingsTab(TabPane):
     def compose(self):
         with Horizontal():
             #Columna izq.
-            with Vertical():
-                yield Label(f"HALLAZGOS")
+            with Vertical(id="col_findings_list"):
                 yield DataTable(show_header=False, id="findings_table")
 
             #Columna der.
-            with Vertical():
-                yield Label(f"", id="lbl_finding_description") 
+            with Vertical(id="col_findings_detail"):
                 yield Label("HOST", id="lbl_finding_host_title") 
                 yield Label("", id="lbl_finding_host") 
+                yield Label(f"", id="lbl_finding_description") 
 
-                yield Label(f"VULNS", id="lbl_finding_title_vulns")
-                yield Label(f"", id="lbl_finding_vulns") 
-
-                with Horizontal():
+                with Vertical():
+                    yield Label(f"VULNS", id="lbl_finding_title_vulns")
+                #yield Label(f"", id="lbl_finding_vulns") 
                     yield Label(f"CRITICIDAD: ", id="lbl_finding_title_sev") 
-                    yield Label(f"", id="lbl_finding_sev") 
+                    #yield Label(f"", id="lbl_finding_sev") 
+
+    def on_mount(self) -> None:
+        self.query_one("#col_findings_list").border_title = "HALLAZGOS"
+        self.query_one("#col_findings_detail").border_title = "DETALLES" 
 
     def load_findings_table(self):
         table = self.query_one("#findings_table", DataTable)
@@ -82,9 +84,9 @@ class FindingsTab(TabPane):
             self.query_one("#lbl_finding_description", Label).update(f"{finding.description}")
 
             vulns_str = ", ".join(t if isinstance(t, str) else str(t[0]) for t in finding.vulns) # Parch para no crashear, convierte todo a string antes de join()
-            self.query_one("#lbl_finding_vulns", Label).update(vulns_str)
+            self.query_one("#lbl_finding_title_vulns", Label).update(f"Vulnerabilidades: {vulns_str}")
 
-            self.query_one("#lbl_finding_sev", Label).update(f"{finding.severity}")
+            self.query_one("#lbl_finding_title_sev", Label).update(f"Criticidad: {finding.severity}")
 
 
     def action_add_finding(self) -> None:

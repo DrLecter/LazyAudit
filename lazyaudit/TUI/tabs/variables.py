@@ -33,25 +33,29 @@ class VariablesTab(TabPane):
     def compose(self):
         with Horizontal():
             #Columna izq.
-            with Vertical():
-                yield Label(f"VARIABLES")
+            with Vertical(id="col_vars_list"):
                 yield DataTable(show_header=False, id="vars_table") # Mostrar variables y host
 
             #Columna der.
-            with Vertical():
+            with Vertical(id="col_vars_detail"):
                 yield Label(f"RHOST", id="lbl_var_key") 
                 yield Label(f"", id="lbl_var_desc") 
 
-                with Horizontal():
-                    yield Label(f"Valor: ", id="lbl_var_value_title") 
-                    yield Label(" {RHOST}", id="lbl_var_value")
+                with Vertical():
+                    with Horizontal():
+                        with Vertical():
 
-                with Horizontal():
-                    yield Label(f"Scope: ", id="lbl_var_scope_title") 
-                    yield Label(" {RHOST}", id="lbl_var_scope")
+                            yield Label(f"Valor: ", id="lbl_var_value_title") 
+                        #yield Label(" {RHOST}", id="lbl_var_value")
+                            yield Label(f"Scope: ", id="lbl_var_scope_title") 
+                        #yield Label(" {RHOST}", id="lbl_var_scope")
 
                 #yield Label(f"DESCRIPTION", id="lbl_var_desc_title") 
                 #yield Label(f"", id="lbl_var_desc") 
+
+    def on_mount(self) -> None:
+        self.query_one("#col_vars_list").border_title = "VARIABLES"
+        self.query_one("#col_vars_detail").border_title = "DETALLES" 
 
     def load_vars_table(self):
         table = self.query_one("#vars_table", DataTable)
@@ -79,9 +83,9 @@ class VariablesTab(TabPane):
         if var:
             self.query_one("#lbl_var_key", Label).update(f"{var.key}")
             self.query_one("#lbl_var_desc", Label).update(f"{var.description}")
-            self.query_one("#lbl_var_value", Label).update(f"{var.value}")
+            self.query_one("#lbl_var_value_title", Label).update(f"Valor: {var.value}")
 
-            self.query_one("#lbl_var_scope", Label).update(f"{var.scope}")
+            self.query_one("#lbl_var_scope_title", Label).update(f"Scope: {var.scope}")
 
             #self.query_one("#lbl_var_desc", Label).update(f"{var}")
 

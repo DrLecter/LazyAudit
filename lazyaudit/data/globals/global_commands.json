@@ -1,11 +1,1 @@
-[
-    {
-        "title": "WinPeas",
-        "command": "./winpwas.sh {RHOST}",
-        "description": "WinPeas for Windows info.",
-        "tags": [
-            "windows winpeas rce"
-        ],
-        "scope": "global"
-    }
-]
+[]

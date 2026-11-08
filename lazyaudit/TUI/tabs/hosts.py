@@ -33,17 +33,20 @@ class HostsTab(TabPane):
     def compose(self):
         with Horizontal():
             #Columna izq.
-            with Vertical():
-                yield Label(f"HOSTS")
+            with Vertical(id="col_hosts_list"):
                 yield DataTable(show_header=False, id="hosts_table")
 
             #Columna der.
-            with Vertical():
+            with Vertical(id="col_hosts_detail"):
                 yield Label(f"HOSTNAME: ", id="lbl_host_host") 
                 yield Label("IP", id="lbl_host_ip") 
 
                 yield Label(f"Puertos: ", id="lbl_host_ports")
                 yield Label(f"Servicios: ", id="lbl_host_services") 
+
+    def on_mount(self) -> None:
+        self.query_one("#col_hosts_list").border_title = "HOSTS"
+        self.query_one("#col_hosts_detail").border_title = "DETALLES" 
 
 
     def load_hosts_table(self):

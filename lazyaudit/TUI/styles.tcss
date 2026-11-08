@@ -1,38 +1,77 @@
 /* ==========================================================================
-   LazyAudit — Solo Formas, Estructura y Proporciones
-   Los colores los maneja Textual de forma nativa (soporta modo claro/oscuro con 'D')
+   LazyAudit — Estilos de Estructura y Formas (Sin colores hardcodeados)
+   Textual gestiona los colores con su tema nativo ($primary, $surface, etc.)
    ========================================================================== */
 
-/* Proporción de dos columnas en cada solapa */
+/* Layout general de cada solapa */
+TabPane {
+    padding: 0 1;
+}
+
 TabPane > Horizontal {
     height: 1fr;
 }
 
+/* Columna Izquierda: Panel redondeado (40%) */
 TabPane > Horizontal > Vertical:first-child {
     width: 40%;
-    border-right: vkey $primary;
-    padding: 0 1;
+    height: 1fr;
+    border: round $primary;
+    border-title-align: left;
+    background: $surface;
+    margin: 1 1 1 0;
+    padding: 1;
 }
 
+/* Columna Derecha: Panel redondeado (60%) */
 TabPane > Horizontal > Vertical:last-child {
     width: 60%;
-    padding: 0 2;
+    height: 1fr;
+    border: round $primary;
+    border-title-align: left;
+    background: $surface;
+    margin: 1 0 1 1;
+    padding: 1 2;
 }
 
-/* Tablas y Listas ocupando todo el alto disponible */
+/* Recuadros con título integrado en el borde superior izquierdo (border-title) */
+#box_command_raw {
+    border: round $primary;
+    border-title-align: left;
+    height: auto;
+    min-height: 3;
+    padding: 0 1;
+    margin: 1 0;
+}
+
+#box_command_interpolated {
+    border: round $primary;
+    border-title-align: left;
+    height: auto;
+    min-height: 3;
+    padding: 0 1;
+    margin: 1 0;
+}
+
+/* ==========================================================================
+   Contenido Interno (Tablas, Listas y Tarjetas)
+   ========================================================================== */
 DataTable {
     height: 1fr;
+    border: none;
 }
 
 ListView {
     height: 1fr;
+    border: none;
 }
 
 ListItem {
     padding: 0 1;
+    margin-bottom: 1;
 }
 
-/* Tarjetas métricas (Solapa Proyectos) */
+/* Tarjetas métricas superiores en Proyectos */
 #count_hosts, #count_findings, #count_variables, #count_commands {
     width: 1fr;
     height: 4;
@@ -42,11 +81,15 @@ ListItem {
     margin: 0 1 1 0;
 }
 
-/* Grid de detalles de proyecto */
+/* Grid de detalles de Proyecto */
 #grid_detalle {
     grid-size: 2;
     grid-columns: 16 1fr;
     margin-top: 1;
+}
+
+.lbl_clave {
+    text-style: bold;
 }
 
 /* Consola de Workflows */
@@ -56,12 +99,14 @@ ListItem {
     margin-top: 1;
 }
 
-/* Modales centrados en pantalla */
+/* ==========================================================================
+   Modales (Tarjetas Flotantes Centradas)
+   ========================================================================== */
 ModalScreen {
     align: center middle;
 }
 
-/* Tarjeta flotante del modal */
+/* Tarjeta flotante para todos los modales (add, modify y remove) */
 ModalScreen > Vertical {
     width: 60;
     height: auto;
@@ -70,7 +115,25 @@ ModalScreen > Vertical {
     padding: 1 2;
 }
 
-#model_title, #model_task, #model_finding, #model_host, #model_key, #model_var {
+/* Modales de eliminación con borde de alerta */
+#model_remove_checklist_group,
+#model_remove_checklist_task,
+#model_remove_command,
+#model_remove_finding,
+#model_remove_host,
+#model_remove_project,
+#model_remove_var,
+#modal_remove_workflow {
+    border: round $error;
+}
+
+/* Títulos de todos los modales centrados y en negrita */
+#model_title, 
+#model_task, 
+#model_finding, 
+#model_host, 
+#model_key, 
+#model_var {
     text-align: center;
     margin-bottom: 1;
     text-style: bold;
@@ -96,5 +159,6 @@ Select {
 
 Button {
     min-width: 12;
+    border: round $primary;
     margin-left: 1;
 }

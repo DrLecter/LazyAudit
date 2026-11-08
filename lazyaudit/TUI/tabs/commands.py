@@ -33,23 +33,27 @@ class CommandsTab(TabPane):
     def compose(self):
         with Horizontal():
             #Columna izq.
-            with Vertical():
-                yield Label(f"COMANDOS")
+            with Vertical(id="col_commands_list"):
                 yield DataTable(show_header=False, id="commands_table") # Mostrar title y scope
 
             #Columna der.
-            with Vertical():
+            with Vertical(id="col_commands_detail"):
                 yield Label(f"Nmap todos los puertos", id="lbl_command_title_name") # Nombre del comando
                 yield Label(f"Nmap de todos los puertos", id="lbl_command_description") # Descripcion
 
-                yield Label(f"PLANTILLA", id="lbl_command_title_plantilla") # PLANTILLA
-                yield Label("nmap -p- -sV -oX out.xml {RHOST}", id="lbl_command_raw") # raw
+                with Vertical(id="box_command_raw"):
+                    yield Label("nmap -p- -sV -oX out.xml {RHOST}", id="lbl_command_raw")
 
-                yield Label(f"RENDERIZADO", id="lbl_command_title_renderizado") # RENDERIZADO
-                yield Label(f"nmap -p- -sV -oX out.xml 10.20.4.5", id="lbl_command_interpolated") # interpolado
+                with Vertical(id="box_command_interpolated"):
+                    yield Label(f"nmap -p- -sV -oX out.xml 10.20.4.5", id="lbl_command_interpolated")
 
-                yield Label(f"TAGS", id="lbl_command_title_tags") # RENDERIZADO
-                yield Label(f"tags, tags, tags", id="lbl_command_tags") # interpolado
+                yield Label(f"TAGS: ", id="lbl_command_title_tags")
+
+    def on_mount(self) -> None:
+        self.query_one("#col_commands_list").border_title = "COMANDOS"
+        self.query_one("#col_commands_detail").border_title = "DETALLES"
+        self.query_one("#box_command_raw").border_title = "PLANTILLA"
+        self.query_one("#box_command_interpolated").border_title = "RENDERIZADO"
 
     def load_commands_table(self):
         table = self.query_one("#commands_table", DataTable)
@@ -83,7 +87,7 @@ class CommandsTab(TabPane):
             self.query_one("#lbl_command_interpolated", Label).update(f"{Command.interpolate(command)}")
 
             tags_str = ", ".join(t if isinstance(t, str) else str(t[0]) for t in command.tags) # Parch para no crashear, convierte todo a string antes de join()
-            self.query_one("#lbl_command_tags", Label).update(tags_str)
+            self.query_one("#lbl_command_title_tags", Label).update(f"TAGS: {tags_str}")
 
     def action_add_command(self) -> None:
         self.app.push_screen(AddCommandModal(), self.add_command)

@@ -47,17 +47,19 @@ class WorkflowsTab(TabPane):
     def compose(self) -> ComposeResult:
         with Horizontal():
             # Columna izquierda - Lista de Workflows
-            with Vertical():
-                yield Label("WORKFLOWS")
+            with Vertical(id="col_workflows_list"):
                 yield ListView(id="workflows_list")
 
             # Columna derecha - Detalle y Consola de salida
-            with Vertical():
-                yield Label("DETALLE DEL WORKFLOW", id="lbl_wf_title")
+            with Vertical(id="col_workflows_detail"):
                 yield Label("Ruta: -", id="lbl_wf_path")
                 yield Label("Scope: -", id="lbl_wf_scope")
                 yield Label("SALIDA EN VIVO (RichLog)", id="lbl_wf_output_title")
                 yield RichLog(id="wf_console", highlight=True, markup=True)
+
+    def on_mount(self) -> None:
+        self.query_one("#col_workflows_list").border_title = "WORKFLOWS"
+        self.query_one("#col_workflows_detail").border_title = "DETALLES"
 
     def load_workflows(self, target_name: str | None = None):
         wf_lv = self.query_one("#workflows_list", ListView)
@@ -66,7 +68,7 @@ class WorkflowsTab(TabPane):
         all_items = Workflow.read_all()
         if not all_items:
             self.current_workflow = None
-            self.query_one("#lbl_wf_title", Label).update("WORKFLOWS (Sin datos)")
+            self.query_one("#col_workflows_detail").border_title = "WORKFLOWS (Sin datos)"
             self.query_one("#lbl_wf_path", Label).update("Ruta: -")
             self.query_one("#lbl_wf_scope", Label).update("Scope: -")
             return
@@ -83,7 +85,7 @@ class WorkflowsTab(TabPane):
         self.update_details(self.current_workflow)
 
     def update_details(self, wf: Workflow) -> None:
-        self.query_one("#lbl_wf_title", Label).update(f"WORKFLOW: {wf.name}")
+        self.query_one("#col_workflows_detail").border_title = f"WORKFLOW: {wf.name}"
         self.query_one("#lbl_wf_path", Label).update(f"Ruta: {wf.path}")
         self.query_one("#lbl_wf_scope", Label).update(f"Scope: {wf.scope.upper()}")
 

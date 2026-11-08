@@ -66,14 +66,16 @@ class ChecklistsTab(TabPane):
     def compose(self) -> ComposeResult:
         with Horizontal():
             # Columna izquierda - Lista de Grupos
-            with Vertical():
-                yield Label("CHECKLISTS")
+            with Vertical(id="col_checklists_list"):
                 yield ListView(id="groups_list")
 
             # Columna derecha - Tareas del grupo
-            with Vertical():
-                yield Label("TAREAS", id="lbl_tasks_title")
+            with Vertical(id="col_checklists_detail"):
                 yield ListView(id="tasks_list")
+
+    def on_mount(self) -> None:
+        self.query_one("#col_checklists_list").border_title = "CHECKLISTS"
+        self.query_one("#col_checklists_detail").border_title = "TAREAS"
 
     def load_groups(self, target_group : str | None = None) -> None:
         groups_lv = self.query_one("#groups_list", ListView)
@@ -82,7 +84,7 @@ class ChecklistsTab(TabPane):
         all_items = Checklist.read_all()
         if not all_items:
             self.query_one("#tasks_list", ListView).clear()
-            self.query_one("#lbl_tasks_title", Label).update("TAREAS (Sin datos)")
+            self.query_one("#col_checklists_detail").border_title = "TAREAS (Sin datos)"
             return
 
         groups_dict = {}
@@ -121,7 +123,7 @@ class ChecklistsTab(TabPane):
         all_items = Checklist.read_all()
         group_tasks = [item for item in all_items if item.group == group_name]
 
-        self.query_one("#lbl_tasks_title", Label).update(f"{group_name.upper()} ({len(group_tasks)})")
+        self.query_one("#col_checklists_detail").border_title = f"{group_name.upper()} ({len(group_tasks)})"
 
         if group_tasks:
             tasks_lv.extend(TaskItem(t) for t in group_tasks)

@@ -33,12 +33,11 @@ class ProjectsTab(TabPane):
     def compose(self):
         with Horizontal():
             #Columna izq.
-            with Vertical():
-                yield Label(f"PROYECTOS")
+            with Vertical(id="col_projects_list"):
                 yield DataTable(show_header=False, id="projects_table")
 
             #Columna der.
-            with Vertical():
+            with Vertical(id="col_projects_detail"):
                 yield Label(f"{PATHS.ACTIVE_PROJECT}", id="lbl_nombre_proyecto")
 
                 # Cantidad de:
@@ -59,6 +58,10 @@ class ProjectsTab(TabPane):
 
                     yield Label("Estado:", classes="lbl_clave")
                     yield Label(f"", id="grid_project_status")
+
+    def on_mount(self) -> None:
+        self.query_one("#col_projects_list").border_title = "PROYECTOS"
+        self.query_one("#col_projects_detail").border_title = "DETALLES"
 
     def load_projects_table(self):
         table = self.query_one("#projects_table", DataTable)
