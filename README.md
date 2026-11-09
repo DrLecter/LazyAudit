@@ -18,8 +18,11 @@
 ## 🚀 Instalación y Ejecución
 
 ### Prerrequisitos
-- Linux con **Podman** (recomendado para ejecución rootless) o **Docker**.
-- Permisos `sudo` para instalar el ejecutable en `/usr/local/bin`.
+- Linux, Bash y un usuario regular (no ejecutar el instalador como `root`).
+- Permisos `sudo` para instalar paquetes, configurar Docker cuando sea necesario y copiar el ejecutable a `/usr/local/bin`.
+- **Podman** (recomendado para ejecución rootless y sin daemon permanente) o **Docker**.
+
+Si no hay ningún motor instalado, el instalador puede instalarlo desde los repositorios nativos en Debian/Ubuntu, Fedora/RHEL, Arch y openSUSE, según disponibilidad. También permite salir y mostrar los comandos para hacerlo manualmente. No añade repositorios de terceros automáticamente.
 
 ### 1. Clonar el repositorio
 ```bash
@@ -28,16 +31,27 @@ cd LazyAudit
 ```
 
 ### 2. Instalar
-Ejecutá el script de instalación automatizado:
+Ejecutá el script de instalación automatizado con tu usuario regular:
 ```bash
 chmod +x install.sh uninstall.sh
 ./install.sh
 ```
 
+**No uses `sudo ./install.sh`**: la imagen y los datos deben pertenecer al usuario que ejecutará LazyAudit. El script solicitará `sudo` únicamente para instalar paquetes, aplicar la configuración de Docker que confirmes y copiar el ejecutable.
+
 El script se encargará de:
-1. Compilar la imagen del contenedor `lazyaudit:1.0.0`.
-2. Crear la carpeta buzón para importar scripts en `$HOME/.lazyaudit/inbox`.
-3. Instalar el wrapper ejecutable `lazyaudit` en `/usr/local/bin/`.
+1. Detectar Podman o Docker y comprobar que el usuario pueda utilizarlo. Si ambos están disponibles, prioriza Podman.
+2. Ofrecer instalar un motor si no hay ninguno, explicando las implicaciones de seguridad, o mostrar los comandos manuales.
+3. Compilar la imagen del contenedor `lazyaudit:1.0.0` con el motor seleccionado.
+4. Instalar el wrapper ejecutable `lazyaudit` en `/usr/local/bin/`. La carpeta `$HOME/.lazyaudit/inbox` se crea al ejecutarlo.
+
+Podés forzar el motor cuando ambos están instalados:
+```bash
+LAZYAUDIT_ENGINE=podman ./install.sh
+LAZYAUDIT_ENGINE=docker ./install.sh
+```
+
+Si un motor está instalado pero no accesible, ejecutá `podman info` o `docker info` para ver el diagnóstico. En Docker puede ser necesario habilitar el servicio (`sudo systemctl enable --now docker`) y añadir el usuario al grupo `docker`. Esta última acción otorga privilegios equivalentes a `root` y requiere iniciar una nueva sesión. El instalador nunca utiliza `sudo docker` para eludir estos controles.
 
 ---
 
@@ -121,7 +135,11 @@ Si deseás desinstalar LazyAudit de tu sistema:
 ```bash
 ./uninstall.sh
 ```
-El script te preguntará si querés conservar o eliminar el volumen persistente de datos (`lazyaudit_data`).
+El script detectará el motor que contiene la imagen o el volumen persistente y te preguntará si querés conservar o eliminar los datos de `lazyaudit_data`. Si hay recursos en ambos motores, te pedirá una selección explícita; también podés indicarla manualmente:
+```bash
+LAZYAUDIT_ENGINE=docker ./uninstall.sh
+```
+Ejecutá el desinstalador con el mismo usuario regular que instaló LazyAudit, sin `sudo` delante del comando.
 
 ---
 
