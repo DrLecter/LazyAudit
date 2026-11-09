@@ -11,7 +11,7 @@
         stdin_open: true
         tty: true
 
-        # Hardening de seguridad para TFG
+        # Hardening de seguridad
         cap_drop:
           - ALL
         security_opt:
@@ -22,7 +22,7 @@
         volumes:
           # Volumen administrado protegido: la PC host NO puede editar ni manipular los datos/logs directamente
           - lazyaudit_data:/app/lazyaudit/data
-          # Buzón de entrada de scripts externos en modo SOLO LECTURA
+          # Buzón de entrada de scripts externos en modo solo lectura
           - ./inbox:/app/inbox:ro
 
         networks:
